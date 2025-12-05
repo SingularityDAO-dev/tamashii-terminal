@@ -1,16 +1,16 @@
 # Tamashii Terminal
 
-A privacy-first CLI terminal that enables secure interactions with Large Language Models (LLMs) while maintaining complete anonymity through privacy layers and anonymous payment systems. Built on **BNB Chain** for decentralized, privacy-preserving transactions.
+A privacy-first CLI terminal that enables secure interactions with **encrypted LLMs** while maintaining complete anonymity through privacy layers. Payments are processed using **Railgun** on **BNB Chain** for fully private, untraceable transactions.
 
 ## 🌟 Features
 
-- **Privacy-Focused LLM Access**: Interact with powerful language models while keeping your data and conversations private
-- **BNB Chain Integration**: Built on BNB Chain for decentralized, privacy-preserving payments
-- **Privacy Layer Payments**: Pay for LLM services using BNB and BNB Chain tokens with privacy-preserving methods
+- **Encrypted LLM**: End-to-end encrypted interactions with language models - your queries and responses are fully encrypted
+- **Railgun on BNB Chain**: Private payments using Railgun's zero-knowledge privacy protocol on BNB Chain
+- **BNB Chain Integration**: Built on BNB Chain for decentralized, privacy-preserving transactions
 - **CLI Interface**: Clean, intuitive command-line interface for seamless terminal-based interactions
-- **End-to-End Privacy**: Your queries, responses, and payment information remain anonymous
+- **End-to-End Privacy**: Your queries, responses, and payment information remain completely anonymous
+- **Zero-Knowledge Proofs**: Railgun's zk-SNARK technology ensures transaction privacy
 - **Multiple Privacy Layers**: Support for various privacy-preserving technologies and protocols
-- **Blockchain-Based Payments**: Secure, transparent transactions on BNB Chain
 
 ## 🚀 Installation
 
@@ -49,8 +49,11 @@ tamashii ask "What is quantum computing?"
 # Configure privacy settings
 tamashii config --privacy-level high
 
-# Check payment balance (BNB Chain)
+# Check Railgun shield balance
 tamashii balance
+
+# View Railgun status
+tamashii railgun-status
 
 # View BNB Chain wallet status
 tamashii wallet-status
@@ -68,34 +71,38 @@ tamashii config --privacy-level [low|medium|high|maximum]
 # Configure privacy layers
 tamashii config --privacy-layers tor,vpn,proxy
 
-# Enable anonymous payments on BNB Chain
-tamashii config --enable-anonymous-payments
+# Enable Railgun on BNB Chain
+tamashii config --enable-railgun
 
-# Connect BNB Chain wallet
+# Connect BNB Chain wallet for Railgun
 tamashii wallet connect
+
+# Deposit to Railgun shield on BNB Chain
+tamashii railgun deposit --amount 0.1
 ```
 
 ## 🔒 Privacy Features
 
-### Privacy Layers
+### Encrypted LLM
 
-Tamashii Terminal supports multiple privacy layers to protect your identity and data:
+Tamashii Terminal uses end-to-end encryption for all LLM interactions:
 
-- **Tor Integration**: Route traffic through the Tor network
-- **VPN Support**: Encrypted VPN connections
-- **Proxy Chains**: Multi-hop proxy configurations
-- **Traffic Obfuscation**: Advanced traffic pattern masking
-- **Metadata Scrubbing**: Remove identifying information from requests
+- **Query Encryption**: Your prompts and queries are encrypted before being sent to the LLM
+- **Response Encryption**: LLM responses are encrypted and only decrypted locally
+- **Zero-Knowledge Architecture**: The LLM provider cannot see your actual queries or responses
+- **Local Decryption**: All decryption happens on your device, ensuring complete privacy
+- **Metadata Protection**: No metadata or usage patterns are exposed
 
-### Anonymous Payments on BNB Chain
+### Railgun on BNB Chain
 
-Pay for LLM services on BNB Chain without revealing your identity:
+Pay for LLM services using Railgun on BNB Chain:
 
-- **BNB Chain Integration**: Native support for BNB and BEP-20 tokens
-- **Privacy Payment Protocols**: Privacy-preserving payment methods on BNB Chain
-- **Smart Contract Payments**: Automated, trustless payment processing
-- **No Identity Linking**: Payments cannot be traced back to your usage
-- **Wallet Integration**: Connect your BNB Chain wallet for seamless transactions
+- **Railgun on BNB**: Leverages Railgun's zero-knowledge privacy protocol on BNB Chain for untraceable payments
+- **zk-SNARK Technology**: Uses zero-knowledge proofs to hide transaction amounts and participants
+- **BNB Chain Native**: Full support for BNB and BEP-20 tokens through Railgun on BNB Chain
+- **Private Transactions**: Transaction amounts, sender, and receiver are all hidden on-chain
+- **No Identity Linking**: Payments cannot be traced back to your wallet or usage
+- **Railgun Shield**: Deposit funds into Railgun's privacy pool for anonymous transactions
 - **Gas Optimization**: Efficient transaction handling on BNB Chain
 
 ## 🛠️ Configuration
@@ -110,28 +117,36 @@ privacy:
     - vpn
   enable_metadata_scrubbing: true
 
+llm:
+  encryption: true
+  provider: default
+  model: gpt-4
+  temperature: 0.7
+  end_to_end_encryption: true
+
 payments:
-  method: anonymous
+  method: railgun
   chain: bnb
   currency: BNB
   auto_recharge: true
   wallet_address: ""  # Your BNB Chain wallet address
   rpc_url: "https://bsc-dataseed.binance.org/"  # BNB Chain RPC endpoint
-
-llm:
-  provider: default
-  model: gpt-4
-  temperature: 0.7
+  railgun:
+    enabled: true
+    shield_address: ""  # Your Railgun shield address
+    view_key: ""  # Your Railgun view key (keep secure!)
 ```
 
 ## 🔐 Security
 
 - **No Logging**: Conversations and queries are never logged
-- **Local Encryption**: All data encrypted at rest
-- **Zero-Knowledge Architecture**: Server cannot see your queries
+- **End-to-End Encryption**: All LLM interactions encrypted from query to response
+- **Local Decryption**: All decryption happens on your device
+- **Zero-Knowledge Architecture**: Server cannot see your queries or responses
+- **Railgun on BNB Chain**: Zero-knowledge proofs ensure transaction privacy using Railgun on BNB Chain
 - **Automatic Cleanup**: Temporary data automatically purged
 - **BNB Chain Security**: Leverages BNB Chain's robust security infrastructure
-- **Smart Contract Audits**: Payment contracts verified and audited
+- **Railgun Audits**: Railgun smart contracts are audited and verified
 
 ## 📝 Examples
 
@@ -139,7 +154,7 @@ llm:
 
 ```bash
 $ tamashii chat
-[Privacy Layer: Active] [Payment: BNB Chain] [Network: BSC]
+[Encrypted LLM: Active] [Payment: Railgun on BNB] [Network: BSC]
 > Hello, can you explain privacy-preserving technologies?
 [LLM Response...]
 ```
@@ -148,9 +163,9 @@ $ tamashii chat
 
 ```bash
 $ tamashii ask "Explain zero-knowledge proofs"
-[Privacy Layer: Active]
-[Processing query anonymously...]
-[Response displayed]
+[Encrypted LLM: Active] [Railgun on BNB: Ready]
+[Processing query with encryption...]
+[Response decrypted locally]
 ```
 
 ## 🤝 Contributing
