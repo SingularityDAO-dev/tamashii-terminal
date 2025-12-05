@@ -11,26 +11,29 @@
 
 # Tamashii Terminal
 
-A privacy-first CLI terminal that enables secure interactions with **encrypted LLMs** while maintaining complete anonymity through privacy layers. Payments are processed using **Railgun** on **BNB Chain** for fully private, untraceable transactions.
+A privacy-enhanced command-line EVM wallet with integrated **Codex LLM** support. Built on **Railgun** for zero-knowledge private transactions on **BNB Chain** (default). Features private token transfers, swaps, and AI-powered assistance through OpenAI Codex.
 
 ## 🌟 Features
 
-- **Encrypted LLM**: End-to-end encrypted interactions with language models - your queries and responses are fully encrypted
-- **Railgun on BNB Chain**: Private payments using Railgun's zero-knowledge privacy protocol on BNB Chain
-- **BNB Chain Integration**: Built on BNB Chain for decentralized, privacy-preserving transactions
-- **CLI Interface**: Clean, intuitive command-line interface for seamless terminal-based interactions
-- **End-to-End Privacy**: Your queries, responses, and payment information remain completely anonymous
-- **Zero-Knowledge Proofs**: Railgun's zk-SNARK technology ensures transaction privacy
-- **Multiple Privacy Layers**: Support for various privacy-preserving technologies and protocols
+- **Privacy-Enhanced Wallet**: Full EVM wallet with Railgun zero-knowledge privacy protocol integration
+- **Multi-Chain Support**: Ethereum, BNB Chain (default), Polygon, and Arbitrum networks
+- **Private Transactions**: Shield/unshield tokens with complete transaction privacy using zk-SNARKs
+- **Codex LLM Integration**: AI-powered assistance via OpenAI Codex CLI for coding and development tasks
+- **Token Swaps**: Private and public token swaps via 0x protocol
+- **Ease Payment System**: Pay for sessions using private BNB transactions
+- **Waku Network**: Decentralized broadcasting for private transaction relay
+- **Wallet Management**: Create, import, and manage multiple Railgun wallets
+- **Balance Tracking**: Real-time public and private balance monitoring
+- **Cross-Contract Calls**: Execute smart contract calls with private token payments
 
 ## 🚀 Installation
 
 ### Prerequisites
 
-- Python 3.8+ (or Node.js, depending on implementation)
+- **Node.js** >= 20
 - Terminal/Command line access
-- BNB Chain wallet (for payments)
-- BNB tokens for transactions
+- BNB Chain wallet  for transactions
+- BNB  tokens for gas fees
 
 ### Quick Start
 
@@ -40,143 +43,302 @@ git clone https://github.com/yourusername/tamashii-terminal.git
 cd tamashii-terminal
 
 # Install dependencies
-pip install -r requirements.txt  # or npm install
+npm install --legacy-peer-deps
 
-# Run the terminal
-python tamashii.py  # or node tamashii.js
+# Build the project
+npm run build
+
+# Run the terminal wallet
+npm start
+# or use the binary
+./bin/tamashii
 ```
 
 ## 📖 Usage
 
-### Basic Commands
+Tamashii Terminal runs as an interactive CLI wallet. Upon startup, you'll see a menu-driven interface.
 
-```bash
-# Start an interactive session
-tamashii chat
+### Main Features
 
-# Ask a question directly
-tamashii ask "What is quantum computing?"
+**Wallet Operations:**
+- Create new Railgun wallet or load existing wallet
+- Switch between multiple wallets
+- View public and private balances
+- Manage wallet passwords and encryption
 
-# Configure privacy settings
-tamashii config --privacy-level high
+**Private Transactions (Railgun):**
+- **Shield**: Move tokens from public wallet to private Railgun shield
+- **Unshield**: Move tokens from private shield back to public wallet
+- **Private Transfer**: Send tokens privately to another Railgun address
+- **Private Swap**: Swap tokens privately using 0x protocol
 
-# Check Railgun shield balance
-tamashii balance
+**Public Transactions:**
+- Send tokens publicly
+- Public token swaps
+- Approve token spending
 
-# View Railgun status
-tamashii railgun-status
+**Network Management:**
+- Switch between networks (Ethereum, BNB Chain, Polygon, Arbitrum)
+- Configure custom RPC providers
+- View network status and gas prices
 
-# View BNB Chain wallet status
-tamashii wallet-status
+**Codex LLM Integration:**
+- Launch Codex for AI-powered coding assistance
+- Configure OpenAI API key for Codex
+- Use Codex with wallet context (addresses, network info)
 
-# View privacy layer status
-tamashii privacy-status
-```
+**Ease Payment System:**
+- Pay for sessions using private BNB transactions
+- Verify payment receipts
+- Cross-contract calls with private token payments
 
-### Privacy Configuration
+### Example Workflow
 
-```bash
-# Set privacy level
-tamashii config --privacy-level [low|medium|high|maximum]
-
-# Configure privacy layers
-tamashii config --privacy-layers tor,vpn,proxy
-
-# Enable Railgun on BNB Chain
-tamashii config --enable-railgun
-
-# Connect BNB Chain wallet for Railgun
-tamashii wallet connect
-
-# Deposit to Railgun shield on BNB Chain
-tamashii railgun deposit --amount 0.1
-```
+1. **Start the wallet**: `npm start` or `./bin/tamashii`
+2. **Create/Load wallet**: Select from menu
+3. **Select network**: Choose BNB Chain (default) or another network
+4. **Shield tokens**: Move BNB/tokens to private Railgun address
+5. **Make private transactions**: Send, swap, or pay privately
+6. **Use Codex**: Launch AI assistant for development tasks
 
 ## 🔒 Privacy Features
 
-### Encrypted LLM
+### Railgun Zero-Knowledge Privacy
 
-Tamashii Terminal uses end-to-end encryption for all LLM interactions:
+Tamashii Terminal uses Railgun's zk-SNARK technology for complete transaction privacy:
 
-- **Query Encryption**: Your prompts and queries are encrypted before being sent to the LLM
-- **Response Encryption**: LLM responses are encrypted and only decrypted locally
-- **Zero-Knowledge Architecture**: The LLM provider cannot see your actual queries or responses
-- **Local Decryption**: All decryption happens on your device, ensuring complete privacy
-- **Metadata Protection**: No metadata or usage patterns are exposed
+- **Private Transactions**: Shield, unshield, transfer, and swap tokens with complete privacy
+- **zk-SNARK Proofs**: Zero-knowledge proofs hide transaction amounts, sender, and receiver
+- **On-Chain Privacy**: Private transactions are verified on-chain without revealing details
+- **Multi-Chain Support**: Railgun privacy available on Ethereum, BNB Chain, Polygon, and Arbitrum
+- **BNB Chain Default**: Optimized for BNB Chain with native BNB and BEP-20 token support
+- **Waku Broadcasting**: Decentralized transaction relay through Waku network
+- **POI Proofs**: Proof of Innocence system for regulatory compliance
 
-### Railgun on BNB Chain
+### Codex LLM Integration
 
-Pay for LLM services using Railgun on BNB Chain:
+AI-powered assistance through OpenAI Codex:
 
-- **Railgun on BNB**: Leverages Railgun's zero-knowledge privacy protocol on BNB Chain for untraceable payments
-- **zk-SNARK Technology**: Uses zero-knowledge proofs to hide transaction amounts and participants
-- **BNB Chain Native**: Full support for BNB and BEP-20 tokens through Railgun on BNB Chain
-- **Private Transactions**: Transaction amounts, sender, and receiver are all hidden on-chain
-- **No Identity Linking**: Payments cannot be traced back to your wallet or usage
-- **Railgun Shield**: Deposit funds into Railgun's privacy pool for anonymous transactions
-- **Gas Optimization**: Efficient transaction handling on BNB Chain
+- **Codex CLI Integration**: Seamless integration with OpenAI Codex command-line tool
+- **Wallet Context**: Codex has access to wallet information (addresses, network, balances)
+- **API Key Authentication**: Secure API key-based authentication
+- **Development Assistance**: Get AI help for coding, debugging, and development tasks
+- **Privacy-Focused**: Codex queries are handled locally with your API key
 
 ## 🛠️ Configuration
 
-Configuration file location: `~/.tamashii/config.yaml`
+### RPC Provider Setup
 
-```yaml
-privacy:
-  level: high
-  layers:
-    - tor
-    - vpn
-  enable_metadata_scrubbing: true
+Tamashii Terminal comes with default public RPC providers for each network, but you can add custom RPC providers for better performance and reliability.
 
-llm:
-  encryption: true
-  provider: default
-  model: gpt-4
-  temperature: 0.7
-  end_to_end_encryption: true
+#### Method 1: Through the Wallet UI (Recommended)
 
-payments:
-  method: railgun
-  chain: bnb
-  currency: BNB
-  auto_recharge: true
-  wallet_address: ""  # Your BNB Chain wallet address
-  rpc_url: "https://bsc-dataseed.binance.org/"  # BNB Chain RPC endpoint
-  railgun:
-    enabled: true
-    shield_address: ""  # Your Railgun shield address
-    view_key: ""  # Your Railgun view key (keep secure!)
+1. Start the wallet: `npm start`
+2. Navigate to the main menu
+3. Select **"Network Tools"** or **"Edit RPC Providers"**
+4. Choose your network (BNB Chain, Ethereum, etc.)
+5. Select **"Add Custom RPC"**
+6. Enter your RPC URL (e.g., `https://bsc-dataseed.binance.org/`)
+7. The wallet will test the RPC connection automatically
+
+#### Method 2: Environment Variable (Remote Config)
+
+For advanced users, you can set a custom RPC for remote configuration:
+
+**Linux/macOS:**
+```bash
+export REMOTE_CONFIG_RPC=https://your-ethereum-rpc-url.com
+npm start
 ```
+
+**Windows (CMD):**
+```cmd
+set REMOTE_CONFIG_RPC=https://your-ethereum-rpc-url.com
+npm start
+```
+
+**Windows (PowerShell):**
+```powershell
+$env:REMOTE_CONFIG_RPC="https://your-ethereum-rpc-url.com"
+npm start
+```
+
+#### Default RPC Providers
+
+The wallet includes multiple default RPC providers for each network:
+
+- **BNB Chain**: Ankr, LlamaRPC, BlastAPI, BlockPI, Binance official
+- **Ethereum**: LlamaRPC, BlastAPI, PublicNode, Cloudflare
+- **Polygon**: LlamaRPC, MeowRPC, QuickNode, PublicNode
+- **Arbitrum**: LlamaRPC, BlastAPI, Omniatech, PublicNode
+
+You can enable/disable individual providers through the UI.
+
+### OpenAI/Codex API Key Setup
+
+Codex LLM integration requires an OpenAI-compatible API key. You can configure it in two ways:
+
+#### Method 1: Codex Config File (Recommended)
+
+1. Create or edit the Codex config file:
+   ```bash
+   # Linux/macOS
+   mkdir -p ~/.codex
+   nano ~/.codex/config.toml
+   
+   # Windows
+   # Navigate to: C:\Users\YourUsername\.codex\config.toml
+   ```
+
+2. Add your API key, model, and optional base URL:
+   ```toml
+   api_key = "sk-your-openai-api-key-here"
+   model = "gpt-4"  # Optional: specify the model to use
+   base_url = "https://api.openai.com/v1"  # Optional: for custom endpoints
+   ```
+
+   **For OpenAI-compatible APIs (e.g., DeepSeek, Anthropic, etc.):**
+   ```toml
+   api_key = "your-api-key"
+   model = "deepseek-v3.1"  # Model name for your provider
+   base_url = "https://api.deepseek.com/v1"  # Your API endpoint
+   ```
+
+   **Common model examples:**
+   - OpenAI: `gpt-4`, `gpt-4-turbo`, `gpt-3.5-turbo`
+   - DeepSeek: `deepseek-v3.1`, `deepseek-chat`
+   - Anthropic Claude: `claude-3-opus`, `claude-3-sonnet`
+   - Custom providers: Check your provider's documentation
+
+3. Save the file and restart the wallet
+
+#### Method 2: Environment Variables
+
+You can also set API keys, model, and base URL via environment variables:
+
+**Linux/macOS:**
+```bash
+export OPENAI_API_KEY="sk-your-api-key-here"
+export OPENAI_MODEL="gpt-4"  # Optional: specify the model
+export OPENAI_BASE_URL="https://api.openai.com/v1"  # Optional
+npm start
+```
+
+**Windows (CMD):**
+```cmd
+set OPENAI_API_KEY=sk-your-api-key-here
+set OPENAI_MODEL=gpt-4
+set OPENAI_BASE_URL=https://api.openai.com/v1
+npm start
+```
+
+**Windows (PowerShell):**
+```powershell
+$env:OPENAI_API_KEY="sk-your-api-key-here"
+$env:OPENAI_MODEL="gpt-4"
+$env:OPENAI_BASE_URL="https://api.openai.com/v1"
+npm start
+```
+
+#### Supported Environment Variables
+
+- `OPENAI_API_KEY` - Your OpenAI or compatible API key
+- `CODEX_API_KEY` - Alternative name for API key
+- `OPENAI_MODEL` - Model to use (e.g., `gpt-4`, `deepseek-v3.1`, `claude-3-opus`)
+- `CODEX_MODEL` - Alternative name for model
+- `OPENAI_BASE_URL` - Base URL for API (default: `https://api.openai.com/v1`)
+- `CODEX_BASE_URL` - Alternative name for base URL
+
+#### Getting an API Key
+
+1. **OpenAI**: Get your key from [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+2. **OpenAI-Compatible APIs**: Use your provider's API key and set the `base_url` accordingly
+   - DeepSeek: `https://api.deepseek.com/v1` (models: `deepseek-v3.1`, `deepseek-chat`)
+   - Anthropic Claude: `https://api.anthropic.com/v1` (models: `claude-3-opus`, `claude-3-sonnet`)
+   - Custom endpoints: Your provider's API URL
+
+#### Model Configuration
+
+The model determines which AI model is used for Codex interactions. If not specified, the default model depends on your API provider:
+
+- **Default**: Uses the provider's default model (often `gpt-3.5-turbo` for OpenAI)
+- **OpenAI Models**: `gpt-4`, `gpt-4-turbo`, `gpt-3.5-turbo`, `gpt-4o`
+- **DeepSeek Models**: `deepseek-v3.1`, `deepseek-chat`
+- **Anthropic Models**: `claude-3-opus`, `claude-3-sonnet`, `claude-3-haiku`
+
+You can set the model in three ways:
+1. **Config file** (`~/.codex/config.toml`): `model = "gpt-4"`
+2. **Environment variable**: `export OPENAI_MODEL="gpt-4"`
+3. **Codex CLI**: The Codex CLI may use its own model selection
+
+**Note**: The model must be compatible with your API provider and base URL.
+
+#### Verifying Codex Setup
+
+1. Start the wallet: `npm start`
+2. From the main menu, select **"Launch Codex"**
+3. If configured correctly, Codex will launch with wallet context
+4. If not configured, you'll see instructions to set up the API key
+
+### Default Configuration
+
+The wallet uses default configurations stored in `src/config/config-defaults.ts`:
+
+- **Default Network**: BNB Chain (Binance Smart Chain)
+- **Supported Networks**: Ethereum, BNB Chain, Polygon, Arbitrum
+- **Database Path**: `.railgun.db` (local)
+- **Artifact Path**: `.artifacts-2.5` (Railgun circuit artifacts)
+- **Keychain Path**: `.zKeyChains` (encrypted wallet storage)
 
 ## 🔐 Security
 
-- **No Logging**: Conversations and queries are never logged
-- **End-to-End Encryption**: All LLM interactions encrypted from query to response
-- **Local Decryption**: All decryption happens on your device
-- **Zero-Knowledge Architecture**: Server cannot see your queries or responses
-- **Railgun on BNB Chain**: Zero-knowledge proofs ensure transaction privacy using Railgun on BNB Chain
-- **Automatic Cleanup**: Temporary data automatically purged
-- **BNB Chain Security**: Leverages BNB Chain's robust security infrastructure
+- **Encrypted Wallet Storage**: Wallets are encrypted with password-derived keys
+- **Private Key Security**: Private keys never leave your device
+- **Zero-Knowledge Proofs**: Railgun transactions use zk-SNARKs for privacy
+- **On-Chain Privacy**: Transaction amounts and participants are hidden on-chain
+- **Waku Network**: Decentralized broadcasting prevents single points of failure
+- **Multi-Provider Support**: Redundant RPC providers for reliability
 - **Railgun Audits**: Railgun smart contracts are audited and verified
+- **Local Database**: All wallet data stored locally in encrypted format
+- **Password Protection**: Wallet access requires password authentication
 
 ## 📝 Examples
 
-### Interactive Chat Session
+### Starting the Wallet
 
 ```bash
-$ tamashii chat
-[Encrypted LLM: Active] [Payment: Railgun on BNB] [Network: BSC]
-> Hello, can you explain privacy-preserving technologies?
-[LLM Response...]
+$ npm start
+# or
+$ ./bin/tamashii
+
+# You'll see the interactive menu:
+# 1. Create New Wallet
+# 2. Load Existing Wallet
+# 3. Switch Network
+# 4. View Balances
+# 5. Shield Tokens
+# 6. Private Transfer
+# 7. Launch Codex
+# ...
 ```
 
-### One-off Query
+### Typical Workflow
+
+1. **Create/Load Wallet**: Select from menu, enter password
+2. **Select Network**: Choose BNB Chain (default) or switch to another
+3. **Shield Tokens**: Move BNB or tokens to private Railgun address
+4. **Make Private Transaction**: Send tokens privately to another Railgun address
+5. **Use Codex**: Launch Codex for AI assistance with wallet context
+
+### Codex Integration
 
 ```bash
-$ tamashii ask "Explain zero-knowledge proofs"
-[Encrypted LLM: Active] [Railgun on BNB: Ready]
-[Processing query with encryption...]
-[Response decrypted locally]
+# From the wallet menu, select "Launch Codex"
+# Codex will have access to:
+# - Current network (BNB Chain, Ethereum, etc.)
+# - Your public and Railgun addresses
+# - Wallet name and balances
+# - Network capabilities
 ```
 
 ## 🤝 Contributing
@@ -191,7 +353,28 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the **LGPL-3.0-or-later** License - see the LICENSE file for details.
+
+## 🛠️ Development
+
+### Build
+
+```bash
+npm run build
+```
+
+### Lint
+
+```bash
+npm run lint
+```
+
+### Scripts
+
+- `npm start` - Run the built application
+- `npm run build` - Build TypeScript to JavaScript
+- `npm run lint` - Run ESLint
+- `npm run installdeps` - Install dependencies with legacy peer deps
 
 ## ⚠️ Disclaimer
 
@@ -209,5 +392,5 @@ For questions, suggestions, or support, please open an issue on GitHub.
 
 ---
 
-**Tamashii Terminal** - Privacy-first LLM interactions in your terminal.
+**Tamashii Terminal** - Privacy-enhanced EVM wallet with Codex LLM integration. Built on Railgun for zero-knowledge private transactions.
 
