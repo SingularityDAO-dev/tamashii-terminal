@@ -1,14 +1,16 @@
 # Tamashii Terminal
 
-A privacy-first CLI terminal that enables secure interactions with Large Language Models (LLMs) while maintaining complete anonymity through privacy layers and anonymous payment systems.
+A privacy-first CLI terminal that enables secure interactions with Large Language Models (LLMs) while maintaining complete anonymity through privacy layers and anonymous payment systems. Built on **BNB Chain** for decentralized, privacy-preserving transactions.
 
 ## 🌟 Features
 
 - **Privacy-Focused LLM Access**: Interact with powerful language models while keeping your data and conversations private
-- **Privacy Layer Payments**: Pay for LLM services using privacy-preserving payment methods that don't expose your identity
+- **BNB Chain Integration**: Built on BNB Chain for decentralized, privacy-preserving payments
+- **Privacy Layer Payments**: Pay for LLM services using BNB and BNB Chain tokens with privacy-preserving methods
 - **CLI Interface**: Clean, intuitive command-line interface for seamless terminal-based interactions
 - **End-to-End Privacy**: Your queries, responses, and payment information remain anonymous
 - **Multiple Privacy Layers**: Support for various privacy-preserving technologies and protocols
+- **Blockchain-Based Payments**: Secure, transparent transactions on BNB Chain
 
 ## 🚀 Installation
 
@@ -16,6 +18,8 @@ A privacy-first CLI terminal that enables secure interactions with Large Languag
 
 - Python 3.8+ (or Node.js, depending on implementation)
 - Terminal/Command line access
+- BNB Chain wallet (for payments)
+- BNB tokens for transactions
 
 ### Quick Start
 
@@ -45,8 +49,11 @@ tamashii ask "What is quantum computing?"
 # Configure privacy settings
 tamashii config --privacy-level high
 
-# Check payment balance
+# Check payment balance (BNB Chain)
 tamashii balance
+
+# View BNB Chain wallet status
+tamashii wallet-status
 
 # View privacy layer status
 tamashii privacy-status
@@ -61,8 +68,11 @@ tamashii config --privacy-level [low|medium|high|maximum]
 # Configure privacy layers
 tamashii config --privacy-layers tor,vpn,proxy
 
-# Enable anonymous payments
+# Enable anonymous payments on BNB Chain
 tamashii config --enable-anonymous-payments
+
+# Connect BNB Chain wallet
+tamashii wallet connect
 ```
 
 ## 🔒 Privacy Features
@@ -77,14 +87,16 @@ Tamashii Terminal supports multiple privacy layers to protect your identity and 
 - **Traffic Obfuscation**: Advanced traffic pattern masking
 - **Metadata Scrubbing**: Remove identifying information from requests
 
-### Anonymous Payments
+### Anonymous Payments on BNB Chain
 
-Pay for LLM services without revealing your identity:
+Pay for LLM services on BNB Chain without revealing your identity:
 
-- **Cryptocurrency Support**: Pay using privacy coins (Monero, Zcash, etc.)
-- **Privacy Payment Protocols**: Support for privacy-preserving payment methods
+- **BNB Chain Integration**: Native support for BNB and BEP-20 tokens
+- **Privacy Payment Protocols**: Privacy-preserving payment methods on BNB Chain
+- **Smart Contract Payments**: Automated, trustless payment processing
 - **No Identity Linking**: Payments cannot be traced back to your usage
-- **Prepaid Anonymous Credits**: Purchase credits anonymously
+- **Wallet Integration**: Connect your BNB Chain wallet for seamless transactions
+- **Gas Optimization**: Efficient transaction handling on BNB Chain
 
 ## 🛠️ Configuration
 
@@ -100,8 +112,11 @@ privacy:
 
 payments:
   method: anonymous
-  currency: xmr
+  chain: bnb
+  currency: BNB
   auto_recharge: true
+  wallet_address: ""  # Your BNB Chain wallet address
+  rpc_url: "https://bsc-dataseed.binance.org/"  # BNB Chain RPC endpoint
 
 llm:
   provider: default
@@ -115,6 +130,8 @@ llm:
 - **Local Encryption**: All data encrypted at rest
 - **Zero-Knowledge Architecture**: Server cannot see your queries
 - **Automatic Cleanup**: Temporary data automatically purged
+- **BNB Chain Security**: Leverages BNB Chain's robust security infrastructure
+- **Smart Contract Audits**: Payment contracts verified and audited
 
 ## 📝 Examples
 
@@ -122,7 +139,7 @@ llm:
 
 ```bash
 $ tamashii chat
-[Privacy Layer: Active] [Payment: Anonymous]
+[Privacy Layer: Active] [Payment: BNB Chain] [Network: BSC]
 > Hello, can you explain privacy-preserving technologies?
 [LLM Response...]
 ```
