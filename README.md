@@ -1,3 +1,14 @@
+```
+████████╗ █████╗ ███╗   ███╗ █████╗ ███████╗██╗  ██╗██╗██╗
+╚══██╔══╝██╔══██╗████╗ ████║██╔══██╗██╔════╝██║  ██║██║██║
+   ██║   ███████║██╔████╔██║███████║███████╗███████║██║██║
+   ██║   ██╔══██║██║╚██╔╝██║██╔══██║╚════██║██╔══██║██║██║
+   ██║   ██║  ██║██║ ╚═╝ ██║██║  ██║███████║██║  ██║██║██║
+   ╚═╝   ╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝
+```
+
+## privacy LLM
+
 # Tamashii Terminal
 
 A privacy-first CLI terminal that enables secure interactions with **encrypted LLMs** while maintaining complete anonymity through privacy layers. Payments are processed using **Railgun** on **BNB Chain** for fully private, untraceable transactions.
