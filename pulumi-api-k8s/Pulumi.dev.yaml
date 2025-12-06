@@ -16,5 +16,5 @@ config:
   tamashii-api-k8s:railgun_rpc_url:
     secure: v1:bN6/AGT2FPBM1ZQ5:A5iQGiJw4rmRxTtjn/wNPX/O3tqtqS6NivJrZcv13wHgZlQjoi/JLG5zjvUQTdopevv65MG12ouJjA8nqzSp4SaloD6qHbLeDDF5nKeFx2hgYE1g5GsrjvOtz6iNe/HDT+p9L1kGCnvR
   tamashii-api-k8s:railgun_network_name: BNB_Chain
-  tamashii-api-k8s:billing_enabled: "true"
+  tamashii-api-k8s:billing_enabled: "false"
 encryptionsalt: v1:0tKMqlhcsAU=:v1:YwCFhMgefOElMqyj:VhxPotKhpYjEOJAqNfh3lMqi2IR2aw==
