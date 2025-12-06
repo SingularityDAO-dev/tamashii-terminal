@@ -1,0 +1,105 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "https://api.example.com/v1/chat/completions",
+    "headers": {
+      "Host": "localhost:5000",
+      "User-Agent": "curl/8.5.0",
+      "Accept": "*/*",
+      "Authorization": "Bearer sk-xxxxxxxxxxxxxxxxxxxx",
+      "Content-Type": "application/json",
+      "Content-Length": "92"
+    },
+    "body": {
+      "model": "gpt-4.1-mini",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Say hello in 5 words"
+        }
+      ]
+    }
+  },
+  "response": {
+    "status_code": 200,
+    "headers": {
+      "Date": "Fri, 05 Dec 2025 10:17:23 GMT",
+      "Content-Type": "application/json",
+      "Transfer-Encoding": "chunked",
+      "Connection": "keep-alive",
+      "access-control-allow-credentials": "true",
+      "access-control-expose-headers": "Content-Type,X-PAYMENT-RESPONSE",
+      "llm_provider-access-control-allow-origin": "*",
+      "llm_provider-cf-ray": "9a92cb1399983412-FRA",
+      "llm_provider-connection": "keep-alive",
+      "llm_provider-content-encoding": "gzip",
+      "llm_provider-content-type": "application/json",
+      "llm_provider-date": "Fri, 05 Dec 2025 10:17:21 GMT",
+      "llm_provider-permissions-policy": "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")",
+      "llm_provider-referrer-policy": "no-referrer, strict-origin-when-cross-origin",
+      "llm_provider-server": "cloudflare",
+      "llm_provider-transfer-encoding": "chunked",
+      "llm_provider-vary": "Accept-Encoding",
+      "llm_provider-x-content-type-options": "nosniff",
+      "llm_provider-x-litellm-response-cost": "1.8e-05",
+      "Server": "cloudflare",
+      "vary": "Origin",
+      "x-litellm-attempted-fallbacks": "0",
+      "x-litellm-attempted-retries": "0",
+      "x-litellm-call-id": "e53fbcd8-6f40-41e0-acf9-7997b16a1987",
+      "x-litellm-key-spend": "0.0",
+      "x-litellm-model-group": "gpt-4.1-mini",
+      "x-litellm-model-id": "f875e612bb28975e6eb047379b76819746e746bfa54a10bff2a1b760e32f461e",
+      "x-litellm-overhead-duration-ms": "4.275",
+      "x-litellm-response-cost": "1.8e-05",
+      "x-litellm-response-duration-ms": "2402.43",
+      "x-litellm-version": "1.80.7",
+      "cf-cache-status": "DYNAMIC",
+      "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+      "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=LfABL2mW9fpUW8Y0afDaVoBWGPHTCoxlFqj5aOkckCDIYxP%2BJ5fUEaMo5LO8e9USIr8GX50MukObtZaQy22XeKHHMePZWEzZNZvg9046\"}]}",
+      "Content-Encoding": "gzip",
+      "CF-RAY": "9a92cb12af5af145-DME"
+    },
+    "body": {
+      "id": "gen-1764929841-Dxd3o0TRP1ktUHHDN91J",
+      "created": 1764929841,
+      "model": "openai/gpt-4.1-mini",
+      "object": "chat.completion",
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "Hello! Hope you're doing well!",
+            "role": "assistant"
+          },
+          "provider_specific_fields": {
+            "native_finish_reason": "completed"
+          }
+        }
+      ],
+      "usage": {
+        "completion_tokens": 8,
+        "prompt_tokens": 13,
+        "total_tokens": 21,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost": 1.8e-05,
+        "is_byok": false,
+        "cost_details": {
+          "upstream_inference_prompt_cost": 5.2e-06,
+          "upstream_inference_completions_cost": 1.28e-05
+        }
+      },
+      "provider": "OpenAI"
+    },
+    "error": null
+  }
+}

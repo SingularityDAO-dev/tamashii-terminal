@@ -1,0 +1,9 @@
+services:
+  llm-debug:
+    build: .
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs

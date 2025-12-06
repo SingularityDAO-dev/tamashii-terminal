@@ -11,3 +11,10 @@ build
 releases
 TODO*
 .DS_Store
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.env

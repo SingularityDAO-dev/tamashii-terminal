@@ -1,0 +1,20 @@
+config:
+  tamashii-api-k8s:hostname: tamashii
+  tamashii-api-k8s:config_stack: organization/c3-k8s-config/corp
+  tamashii-api-k8s:traefik_stack: organization/c3-k8s-traefik/k8s.compute3.net
+  tamashii-api-k8s:docker_stack: organization/tamashii-docker/dev
+  tamashii-api-k8s:db_stack: organization/c3-psql-db-config/dev
+  tamashii-api-k8s:psql_stack: organization/c3-psql-k8s/prod2
+  tamashii-api-k8s:registry_tag: dev
+  tamashii-api-k8s:use_service_dns: "true"
+  tamashii-api-k8s:c3_api_key:
+    secure: v1:E9LDmRR4D6Fvkvh6:ZImJzvWn6mzaI+aNCEY+c+K7KZZe7U71JnusorTBH153mVxcEfH+pfYDVGq3GQfL5o2Az+RmS+kZ5K7vRvcc40m5hq+MwRY=
+  tamashii-api-k8s:railgun_mnemonic:
+    secure: v1:vMQe+lVzaH7rBUlw:hX/Zi+1enCuNGXJc4qHKyeF2fLFm4u+6zDPA64bfa6pRXoZ/2HDnMYySMS4wC5Y78bBqM7A8rgc8KEm268vVYb81zQNnnRz1EhV3cTPd28pyJJw7
+  tamashii-api-k8s:railgun_encryption_key:
+    secure: v1:msSqCDB8NHvoiaN1:JGac7I4MJ79/8qIGEt9AW0FrBeRktUxHsaSlSjucU8T7qz6h1Bw4jkVIlFAn9dKCrfR2110WNpmXxiyIDlJ931PLp8zIoRAigUO9cOlPGJc=
+  tamashii-api-k8s:railgun_rpc_url:
+    secure: v1:bN6/AGT2FPBM1ZQ5:A5iQGiJw4rmRxTtjn/wNPX/O3tqtqS6NivJrZcv13wHgZlQjoi/JLG5zjvUQTdopevv65MG12ouJjA8nqzSp4SaloD6qHbLeDDF5nKeFx2hgYE1g5GsrjvOtz6iNe/HDT+p9L1kGCnvR
+  tamashii-api-k8s:railgun_network_name: BNB_Chain
+  tamashii-api-k8s:billing_enabled: "true"
+encryptionsalt: v1:0tKMqlhcsAU=:v1:YwCFhMgefOElMqyj:VhxPotKhpYjEOJAqNfh3lMqi2IR2aw==

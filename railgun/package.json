@@ -1,0 +1,26 @@
+{
+  "name": "railgun-payment-backend",
+  "version": "1.0.0",
+  "description": "Simple backend for receiving RAILGUN private payments",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc && node dist/index.js"
+  },
+  "dependencies": {
+    "@railgun-community/shared-models": "^8.0.0",
+    "@railgun-community/wallet": "^10.8.1",
+    "ethers": "^6.13.1",
+    "express": "^4.18.2",
+    "leveldown": "^6.1.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

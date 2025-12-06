@@ -1,0 +1,101 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "https://api.example.com/v1/completions",
+    "headers": {
+      "Host": "localhost:5000",
+      "User-Agent": "curl/8.5.0",
+      "Accept": "*/*",
+      "Authorization": "Bearer sk-xxxxxxxxxxxxxxxxxxxx",
+      "Content-Type": "application/json",
+      "Content-Length": "82"
+    },
+    "body": {
+      "model": "gpt-4.1-mini",
+      "prompt": "Say hello",
+      "max_tokens": 50
+    }
+  },
+  "response": {
+    "status_code": 200,
+    "headers": {
+      "Date": "Fri, 05 Dec 2025 10:22:02 GMT",
+      "Content-Type": "application/json",
+      "Transfer-Encoding": "chunked",
+      "Connection": "keep-alive",
+      "access-control-allow-credentials": "true",
+      "access-control-expose-headers": "Content-Type,X-PAYMENT-RESPONSE",
+      "llm_provider-access-control-allow-origin": "*",
+      "llm_provider-cf-ray": "9a92d1e1df19d3c2-FRA",
+      "llm_provider-connection": "keep-alive",
+      "llm_provider-content-encoding": "gzip",
+      "llm_provider-content-type": "application/json",
+      "llm_provider-date": "Fri, 05 Dec 2025 10:22:00 GMT",
+      "llm_provider-permissions-policy": "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")",
+      "llm_provider-referrer-policy": "no-referrer, strict-origin-when-cross-origin",
+      "llm_provider-server": "cloudflare",
+      "llm_provider-transfer-encoding": "chunked",
+      "llm_provider-vary": "Accept-Encoding",
+      "llm_provider-x-content-type-options": "nosniff",
+      "llm_provider-x-litellm-response-cost": "1.96e-05",
+      "Server": "cloudflare",
+      "vary": "Origin",
+      "x-litellm-attempted-fallbacks": "0",
+      "x-litellm-attempted-retries": "0",
+      "x-litellm-call-id": "4e539db2-5542-4a35-9c6a-dfd6f7f0165e",
+      "x-litellm-key-spend": "0.0",
+      "x-litellm-model-id": "f875e612bb28975e6eb047379b76819746e746bfa54a10bff2a1b760e32f461e",
+      "x-litellm-overhead-duration-ms": "5.876",
+      "x-litellm-response-cost": "1.96e-05",
+      "x-litellm-response-duration-ms": "2251.166",
+      "x-litellm-version": "1.80.7",
+      "cf-cache-status": "DYNAMIC",
+      "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+      "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=%2FfHDMJ7SO8%2BMhHD4KbQFM9Bp5IkwBlWxXaTxc8TCX8DnLJdSj2dvJaustgz9S4phuRwUFeOZcbvyBFTrriI0u7R8ocIiCa9%2B689NJWtZ\"}]}",
+      "Content-Encoding": "gzip",
+      "CF-RAY": "9a92d1e10832f13d-DME"
+    },
+    "body": {
+      "id": "gen-1764930119-nUK8Gudl8kOJEMb2aM6c",
+      "object": "text_completion",
+      "created": 1764930119,
+      "model": "openai/gpt-4.1-mini",
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "text": "Hello! How can I assist you today?",
+          "logprobs": null
+        }
+      ],
+      "usage": {
+        "completion_tokens": 10,
+        "prompt_tokens": 9,
+        "total_tokens": 19,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "audio_tokens": null,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": null,
+          "text_tokens": null,
+          "image_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0,
+          "text_tokens": null,
+          "image_tokens": null,
+          "video_tokens": 0
+        },
+        "cost": 1.96e-05,
+        "is_byok": false,
+        "cost_details": {
+          "upstream_inference_cost": null,
+          "upstream_inference_prompt_cost": 3.6e-06,
+          "upstream_inference_completions_cost": 1.6e-05
+        }
+      }
+    },
+    "error": null
+  }
+}

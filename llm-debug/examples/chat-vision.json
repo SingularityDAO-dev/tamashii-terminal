@@ -1,0 +1,117 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "https://api.example.com/v1/chat/completions",
+    "headers": {
+      "Host": "localhost:5000",
+      "User-Agent": "curl/8.5.0",
+      "Accept": "*/*",
+      "Authorization": "Bearer sk-xxxxxxxxxxxxxxxxxxxx",
+      "Content-Type": "application/json",
+      "Content-Length": "517"
+    },
+    "body": {
+      "model": "gpt-4o-mini",
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "What color is this square? Reply in one word."
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAb0lEQVR4nO3PAQkAAAyEwO9feoshgnABdLep8QUNyPEFDcjxBQ3I8QUNyPEFDcjxBQ3I8QUNyPEFDcjxBQ3I8QUNyPEFDcjxBQ3I8QUNyPEFDcjxBQ3I8QUNyPEFDcjxBQ3I8QUNyPEFDcjxBQ3IPanc8OLDQitxAAAAAElFTkSuQmCC"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "response": {
+    "status_code": 200,
+    "headers": {
+      "Date": "Fri, 05 Dec 2025 10:29:01 GMT",
+      "Content-Type": "application/json",
+      "Transfer-Encoding": "chunked",
+      "Connection": "keep-alive",
+      "access-control-allow-credentials": "true",
+      "access-control-expose-headers": "Content-Type,X-PAYMENT-RESPONSE",
+      "llm_provider-access-control-allow-origin": "*",
+      "llm_provider-cf-ray": "9a92dc264ea337bc-FRA",
+      "llm_provider-connection": "keep-alive",
+      "llm_provider-content-encoding": "gzip",
+      "llm_provider-content-type": "application/json",
+      "llm_provider-date": "Fri, 05 Dec 2025 10:29:01 GMT",
+      "llm_provider-permissions-policy": "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")",
+      "llm_provider-referrer-policy": "no-referrer, strict-origin-when-cross-origin",
+      "llm_provider-server": "cloudflare",
+      "llm_provider-transfer-encoding": "chunked",
+      "llm_provider-vary": "Accept-Encoding",
+      "llm_provider-x-content-type-options": "nosniff",
+      "llm_provider-x-litellm-response-cost": "0.0012783",
+      "Server": "cloudflare",
+      "vary": "Origin",
+      "x-litellm-attempted-fallbacks": "0",
+      "x-litellm-attempted-retries": "0",
+      "x-litellm-call-id": "4c62de81-2684-4e06-a55c-fe06dac2e916",
+      "x-litellm-key-spend": "0.0",
+      "x-litellm-model-group": "gpt-4o-mini",
+      "x-litellm-model-id": "418a60923e499378384c4f7a0eda2515783e66305a02409e7bcd7693da5e4e21",
+      "x-litellm-overhead-duration-ms": "3.797",
+      "x-litellm-response-cost": "0.0012783",
+      "x-litellm-response-duration-ms": "652.698",
+      "x-litellm-version": "1.80.7",
+      "cf-cache-status": "DYNAMIC",
+      "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+      "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=ZWCZkYy63pz9ulmX8Bs25ApmOJGfsih7MKCI5yRvZ9LEC%2FNkKL4XXo%2FxoCjSeeWKNDcHXXZmBE5Rc7n9EE0D4IdvbPE7ASCUKdRObOcV\"}]}",
+      "Content-Encoding": "gzip",
+      "CF-RAY": "9a92dc25a8de8167-FRA"
+    },
+    "body": {
+      "id": "gen-1764930540-hSjuaGFjNDScUiS2u1oT",
+      "created": 1764930540,
+      "model": "openai/gpt-4o-mini",
+      "object": "chat.completion",
+      "system_fingerprint": "fp_eca0ce8298",
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "content": "Red",
+            "role": "assistant"
+          },
+          "provider_specific_fields": {
+            "native_finish_reason": "stop"
+          }
+        }
+      ],
+      "usage": {
+        "completion_tokens": 1,
+        "prompt_tokens": 8518,
+        "total_tokens": 8519,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost": 0.0012783,
+        "is_byok": false,
+        "cost_details": {
+          "upstream_inference_prompt_cost": 0.0012777,
+          "upstream_inference_completions_cost": 6e-07
+        }
+      },
+      "provider": "OpenAI"
+    },
+    "error": null
+  }
+}

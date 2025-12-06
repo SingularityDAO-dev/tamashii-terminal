@@ -1,0 +1,138 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "https://api.example.com/v1/chat/completions",
+    "headers": {
+      "Host": "localhost:5000",
+      "User-Agent": "curl/8.5.0",
+      "Accept": "*/*",
+      "Authorization": "Bearer sk-xxxxxxxxxxxxxxxxxxxx",
+      "Content-Type": "application/json",
+      "Content-Length": "570"
+    },
+    "body": {
+      "model": "gpt-4.1-mini",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is the weather in Tokyo?"
+        }
+      ],
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Get the current weather in a location",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string",
+                  "description": "City name"
+                }
+              },
+              "required": [
+                "location"
+              ]
+            }
+          }
+        }
+      ],
+      "tool_choice": "auto"
+    }
+  },
+  "response": {
+    "status_code": 200,
+    "headers": {
+      "Date": "Fri, 05 Dec 2025 10:21:20 GMT",
+      "Content-Type": "application/json",
+      "Transfer-Encoding": "chunked",
+      "Connection": "keep-alive",
+      "access-control-allow-credentials": "true",
+      "access-control-expose-headers": "Content-Type,X-PAYMENT-RESPONSE",
+      "llm_provider-access-control-allow-origin": "*",
+      "llm_provider-cf-ray": "9a92d0ddfb06d3c2-FRA",
+      "llm_provider-connection": "keep-alive",
+      "llm_provider-content-encoding": "gzip",
+      "llm_provider-content-type": "application/json",
+      "llm_provider-date": "Fri, 05 Dec 2025 10:21:18 GMT",
+      "llm_provider-permissions-policy": "payment=(self \"https://checkout.stripe.com\" \"https://connect-js.stripe.com\" \"https://js.stripe.com\" \"https://*.js.stripe.com\" \"https://hooks.stripe.com\")",
+      "llm_provider-referrer-policy": "no-referrer, strict-origin-when-cross-origin",
+      "llm_provider-server": "cloudflare",
+      "llm_provider-transfer-encoding": "chunked",
+      "llm_provider-vary": "Accept-Encoding",
+      "llm_provider-x-content-type-options": "nosniff",
+      "llm_provider-x-litellm-response-cost": "4.4e-05",
+      "Server": "cloudflare",
+      "vary": "Origin",
+      "x-litellm-attempted-fallbacks": "0",
+      "x-litellm-attempted-retries": "0",
+      "x-litellm-call-id": "961357c7-9f57-4ce1-a265-204a0da123a1",
+      "x-litellm-key-spend": "0.0",
+      "x-litellm-model-group": "gpt-4.1-mini",
+      "x-litellm-model-id": "f875e612bb28975e6eb047379b76819746e746bfa54a10bff2a1b760e32f461e",
+      "x-litellm-overhead-duration-ms": "4.988",
+      "x-litellm-response-cost": "4.4e-05",
+      "x-litellm-response-duration-ms": "2237.901",
+      "x-litellm-version": "1.80.7",
+      "cf-cache-status": "DYNAMIC",
+      "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+      "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=WA9vaBnFPkf%2Flqj59QpV4E2tZCFRdEvxzjRIp43aiG087NOgah%2BlT1kFBof91fki35V7Iwvl%2FpF1IDJjSGqg3D5hVLfHR88Bjyv2craP\"}]}",
+      "Content-Encoding": "gzip",
+      "CF-RAY": "9a92d0dd490af111-DME"
+    },
+    "body": {
+      "id": "gen-1764930078-u0vYaWFC6DCN8jD4syeh",
+      "created": 1764930078,
+      "model": "openai/gpt-4.1-mini",
+      "object": "chat.completion",
+      "choices": [
+        {
+          "finish_reason": "tool_calls",
+          "index": 0,
+          "message": {
+            "content": "",
+            "role": "assistant",
+            "tool_calls": [
+              {
+                "index": 0,
+                "function": {
+                  "arguments": "{\"location\":\"Tokyo\"}",
+                  "name": "get_weather"
+                },
+                "id": "call_7snaW2SyY6FWi7ehKGhtI82r",
+                "type": "function"
+              }
+            ]
+          },
+          "provider_specific_fields": {
+            "native_finish_reason": "completed"
+          }
+        }
+      ],
+      "usage": {
+        "completion_tokens": 15,
+        "prompt_tokens": 50,
+        "total_tokens": 65,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost": 4.4e-05,
+        "is_byok": false,
+        "cost_details": {
+          "upstream_inference_prompt_cost": 2e-05,
+          "upstream_inference_completions_cost": 2.4e-05
+        }
+      },
+      "provider": "OpenAI"
+    },
+    "error": null
+  }
+}
