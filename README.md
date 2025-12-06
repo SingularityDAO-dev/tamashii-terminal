@@ -91,7 +91,7 @@ Tamashii Terminal runs as an interactive CLI wallet with a menu-driven interface
 3. Add BNB and shield: Add BNB to your wallet, then use "Shield [BNB]" to move tokens to your private Railgun address
 4. Sign in to Tamashi: Select "Sign in to Tamashi Network" from the wallet menu
 5. Launch GPU (vLLM)
-6. Start using private wallet
+6. Start using private LLM !!!
 
 ### Backend Service
 
