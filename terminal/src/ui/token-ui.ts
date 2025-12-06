@@ -418,10 +418,20 @@ export const runTokenAmountSelection = async (
   token: RailgunReadableAmount,
   publicTransfer: boolean,
   isShieldEvent = false,
+  defaultRecipientAddress?: string,
 ): Promise<RailgunSelectedAmount | undefined> => {
-  const recipientAddress = publicTransfer
-    ? await runInputPublicAddress(`[${token.symbol}] `, isShieldEvent)
-    : await runInputRailgunAddress(`[${token.symbol}] `, isShieldEvent);
+  let recipientAddress: string | undefined;
+  
+  if (defaultRecipientAddress) {
+    // Use the default recipient address if provided
+    recipientAddress = defaultRecipientAddress;
+    console.log(`\n📍 Using pre-filled recipient address: ${getFormattedAddress(recipientAddress).green}\n`.dim);
+  } else {
+    // Otherwise prompt for address
+    recipientAddress = publicTransfer
+      ? await runInputPublicAddress(`[${token.symbol}] `, isShieldEvent)
+      : await runInputRailgunAddress(`[${token.symbol}] `, isShieldEvent);
+  }
 
   if (!recipientAddress) {
     return undefined;
@@ -448,6 +458,7 @@ export const tokenAmountSelectionPrompt = async (
   publicTransfer: boolean,
   singleTransfer = false,
   isShieldEvent = false,
+  defaultRecipientAddress?: string,
 ): Promise<RailgunSelectedAmount[]> => {
   const selections = [];
 
@@ -468,6 +479,7 @@ export const tokenAmountSelectionPrompt = async (
           bal,
           publicTransfer,
           isShieldEvent,
+          defaultRecipientAddress,
         );
         if (selection) {
           currentBalance = currentBalance - selection.selectedAmount;
@@ -500,6 +512,7 @@ export const transferTokenAmountSelectionPrompt = async (
   publicTransfer = false,
   singleAddressSelection = false,
   isShieldEvent = false,
+  defaultRecipientAddress?: string,
 ) => {
   const transferType = publicBalances ? "Publicly" : "Privately";
   const selections = await tokenSelectionPrompt(
@@ -514,6 +527,7 @@ export const transferTokenAmountSelectionPrompt = async (
     publicTransfer,
     singleAddressSelection,
     isShieldEvent,
+    defaultRecipientAddress,
   );
   return { amountSelections };
 };

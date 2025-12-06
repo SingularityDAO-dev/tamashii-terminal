@@ -966,16 +966,18 @@ const getMainPrompt = (networkName: NetworkName, baseSymbol: string) => {
       message: `Now arriving at TAMASHI ${("v" + version).grey}... ${"privacy llm".grey
       }`,
     separator: " ",
-    initial: lastMenuSelection ?? "create-wallet",
+    initial: lastMenuSelection ?? "tamashi-signin",
     choices: [
+      { name: "tamashi-signin", message: "Sign in to Tamashi Network".yellow },
       { name: "create-wallet", message: "Create Wallet".cyan.bold },
       { name: "base-shield", message: `Shield [${baseSymbol.cyan.bold}]` },
       { name: "base-unshield", message: `Unshield [${baseSymbol.cyan.bold}]` },
       { name: "private-transfer", message: "Private Transfer [0zk → 0zk]".magenta },
+      { name: "pay-gpu", message: "Pay for GPU [0zk → 0zk]".magenta },
       { name: "ease-payment", message: "Pay EASE".cyan },
       { name: "balance", message: "View Balance".cyan },
-      { name: "tamashi-signin", message: "Sign in to Tamashi Network".yellow },
       { name: "broadcaster-settings", message: "Broadcaster Settings".grey },
+      { name: "go-back", message: "Return to Main Menu".grey },
       {
         name: "exit",
         message: `Exit${process.platform === "win32" ? "?" : " 💫"}`.grey,
@@ -1276,6 +1278,28 @@ export const runWalletMenu = async () => {
       }
       break;
     }
+    case "pay-gpu": {
+      try {
+        const gpuProviderAddress = "0zk1qykekkqyxy82kqy9fhgnhg5udvdpm0fv0mc0ht4ufmhqnjddh39r4rv7j6fe3z53l7v337d3sqx5png6vvgh9m4m2d5sm884lck506p596ppxw3arcxj7983wh2";
+        console.log("\n💻 Pay for GPU [0zk → 0zk]".magenta.bold);
+        console.log("Send shielded tokens to GPU provider Railgun address for GPU resources.\n".dim);
+        console.log(`GPU Provider Address: ${gpuProviderAddress.grey}\n`.dim);
+        await runTransactionBuilder(
+          networkName,
+          RailgunTransaction.Transfer,
+          undefined,
+          gpuProviderAddress,
+        );
+      } catch (err) {
+        const errorMessage = (err as Error)?.message || String(err);
+        console.error("\n" + "=".repeat(60).red);
+        console.error("⚠️  Error in GPU payment".red.bold);
+        console.error(errorMessage.yellow);
+        console.error("=".repeat(60).red + "\n");
+        await confirmPromptCatchRetry(`Error: ${errorMessage}`.red);
+      }
+      break;
+    }
     case "ease-payment": {
       try {
         await runEasePaymentPrompt();
@@ -1354,7 +1378,10 @@ export const runWalletMenu = async () => {
       }
       break;
     }
-
+    case "go-back": {
+      clearConsoleBuffer();
+      return; // Exit the while loop and return to top-level menu
+    }
         case "exit": {
           clearConsoleBuffer();
           await processSafeExit();

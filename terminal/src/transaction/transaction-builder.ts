@@ -695,6 +695,7 @@ export const runTransactionBuilder = async (
   chainName: NetworkName,
   transactionType: RailgunTransaction,
   resultObj?: TerminalTransaction,
+  defaultRecipientAddress?: string,
 ): Promise<any> => {
   const {
     confirmAmountsDisabled,
@@ -883,6 +884,11 @@ export const runTransactionBuilder = async (
             case RailgunTransaction.Transfer: {
               const _selection = await transferTokenAmountSelectionPrompt(
                 chainName,
+                false,
+                false,
+                false,
+                false,
+                defaultRecipientAddress,
               );
               selection = _selection;
               break;
@@ -1162,6 +1168,11 @@ export const runTransactionBuilder = async (
             case RailgunTransaction.Transfer: {
               const _selection = await transferTokenAmountSelectionPrompt(
                 chainName,
+                false,
+                false,
+                false,
+                false,
+                defaultRecipientAddress,
               );
               selection = _selection;
               break;

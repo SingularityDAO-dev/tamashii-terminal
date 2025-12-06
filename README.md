@@ -86,11 +86,12 @@ Tamashii Terminal runs as an interactive CLI wallet with a menu-driven interface
 - Execute private transactions with zero-knowledge privacy
 
 **Workflow:**
-1. Start: `cd terminal && npm start` or `./bin/tamashii`
-2. Create/load wallet and select network (BNB Chain default)
-3. Shield tokens to private Railgun address
-4. Use "Pay EASE" or private transfer to pay for GPU resources
-5. Make private transactions or launch Codex for AI assistance
+1. Start terminal: `cd terminal && npm start` or `./bin/tamashii`
+2. Create wallet: Select "Create Wallet" from the menu
+3. Add BNB and shield: Add BNB to your wallet, then use "Shield [BNB]" to move tokens to your private Railgun address
+4. Sign in to Tamashi: Select "Sign in to Tamashi Network" from the wallet menu
+5. Use "Pay for GPU [0zk → 0zk]" to pay for GPU resources via private transfer
+6. Make private transactions or launch Codex for AI assistance
 
 ### Backend Service
 
@@ -182,8 +183,9 @@ npm start
 # - Create Wallet
 # - Shield [BNB]
 # - Private Transfer [0zk → 0zk]
-# - Pay EASE (for GPU resources)
-# - Launch Codex
+# - Pay for GPU [0zk → 0zk]  ← Pay for GPU resources
+# - Pay EASE
+# - View Balance
 ```
 
 **Backend API:**
