@@ -966,13 +966,13 @@ const getMainPrompt = (networkName: NetworkName, baseSymbol: string) => {
       message: `Now arriving at TAMASHI ${("v" + version).grey}... ${"privacy llm".grey
       }`,
     separator: " ",
-    initial: lastMenuSelection ?? "tamashi-signin",
+    initial: lastMenuSelection ?? "base-shield",
     choices: [
-      { name: "tamashi-signin", message: "Sign in to Tamashi Network".yellow },
-      { name: "create-wallet", message: "Create Wallet".cyan.bold },
       { name: "base-shield", message: `Shield [${baseSymbol.cyan.bold}]` },
-      { name: "base-unshield", message: `Unshield [${baseSymbol.cyan.bold}]` },
+      { name: "tamashi-signin", message: "Sign in to Tamashi Network".yellow },
       { name: "private-transfer", message: "Private Transfer [0zk → 0zk]".magenta },
+      { name: "create-wallet", message: "Create Wallet".cyan.bold },
+      { name: "base-unshield", message: `Unshield [${baseSymbol.cyan.bold}]` },
       { name: "pay-gpu", message: "Pay for GPU [0zk → 0zk]".magenta },
       { name: "ease-payment", message: "Pay EASE".cyan },
       { name: "balance", message: "View Balance".cyan },
