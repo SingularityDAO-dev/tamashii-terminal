@@ -55,6 +55,13 @@ async def health():
     return {"status": "ok"}
 
 
+@app.get(f"{PREFIX}/address" if PREFIX else "/address")
+async def get_deposit_address():
+    """Get the Railgun address for deposits (unauthenticated)"""
+    import railgun
+    return await railgun.get_address()
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

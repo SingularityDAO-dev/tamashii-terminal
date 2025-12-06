@@ -110,3 +110,39 @@ async def get_job(job_id: str, address: str = Depends(require_auth), db: Session
         raise HTTPException(status_code=404, detail="Job not found")
     return {"id": job.id, "c3_job_id": job.c3_job_id, "gpu_type": job.gpu_type, "image": job.image,
             "duration_seconds": job.duration_seconds, "cost_usd": job.cost_usd, "cost_bnb": job.cost_bnb, "created_at": job.created_at}
+
+
+@router.get("/logs/{job_id}")
+async def get_job_logs(job_id: str, address: str = Depends(require_auth), db: Session = Depends(get_db)):
+    """Get job logs from C3"""
+    job = db.query(Job).filter(Job.id == job_id, Job.user_address == address).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    c3 = C3(api_key=get_c3_api_key())
+    try:
+        logs = c3.jobs.logs(job.c3_job_id)
+        return {"logs": logs}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get logs: {e}")
+
+
+@router.get("/metrics/{job_id}")
+async def get_job_metrics(job_id: str, address: str = Depends(require_auth), db: Session = Depends(get_db)):
+    """Get job metrics from C3"""
+    job = db.query(Job).filter(Job.id == job_id, Job.user_address == address).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    c3 = C3(api_key=get_c3_api_key())
+    try:
+        metrics = c3.jobs.metrics(job.c3_job_id)
+        return {
+            "gpus": [{"index": g.index, "name": g.name, "utilization": g.utilization,
+                      "memory_used": g.memory_used, "memory_total": g.memory_total,
+                      "temperature": g.temperature, "power_draw": g.power_draw} for g in metrics.gpus],
+            "system": {"cpu_percent": metrics.system.cpu_percent, "memory_used": metrics.system.memory_used,
+                       "memory_limit": metrics.system.memory_limit} if metrics.system else None
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get metrics: {e}")

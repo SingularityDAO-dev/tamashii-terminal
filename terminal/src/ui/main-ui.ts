@@ -2,6 +2,7 @@ import { RailgunTransaction } from "../models/transaction-models";
 import { getPrivateDisplayBalances } from "../balance/balance-util";
 import { getCurrentNetwork } from "../engine/engine";
 import { generateAuthPayload } from "../util/sign-util";
+import * as tamashii from "../tamashii";
 import {
   getChainForName,
   getWrappedTokenInfoForChain,
@@ -565,77 +566,233 @@ const runBroadcasterSettingsPrompt = async () => {
  * Prompt for signing in to Tamashi Network
  */
 const runTamashiSignInPrompt = async () => {
-  console.log("\n" + "=".repeat(60).yellow);
-  console.log("Sign in to Tamashi Network".yellow.bold);
-  console.log("=".repeat(60).yellow);
-  
-  console.log("\n🌐 Tamashi Network connects you to:".white);
-  console.log("   • Private compute resources".grey);
-  console.log("   • Decentralized AI inference".grey);
-  console.log("   • Privacy-preserving payments".grey);
-  
-  const signInPrompt = new Select({
-    header: " ",
-    message: "Sign In Options",
-    choices: [
-      { name: "wallet-sign", message: "Sign with Wallet".green },
-      { name: "view-status", message: "View Connection Status".grey },
-      { name: "back", message: "Back to Main Menu".grey },
-    ],
-  });
-  
-  const selection = await signInPrompt.run().catch(confirmPromptCatch);
-  
-  if (!selection || selection === "back") {
-    return;
-  }
-  
-  switch (selection) {
-    case "wallet-sign": {
-      const railgunAddress = getCurrentRailgunAddress();
-      const publicAddress = getCurrentWalletPublicAddress();
-      
-      if (!railgunAddress || !publicAddress) {
-        console.log("\n❌ No wallet found. Please create a wallet first.".red);
-        await confirmPromptCatchRetry("Press ENTER to continue...");
-        return;
-      }
-      
-      console.log("\n🔐 Signing with your wallet...".yellow);
-      
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    console.log("\n" + "=".repeat(60).yellow);
+    console.log("Tamashi Network".yellow.bold);
+    console.log("=".repeat(60).yellow);
+
+    // Show current status
+    const isAuth = tamashii.isAuthenticated();
+    const activeGpu = tamashii.getActiveSession();
+
+    console.log("\n📊 Status:".white);
+    console.log(`   Auth:     ${isAuth ? "Signed In".green : "Not signed in".yellow}`);
+    console.log(`   Wallet:   ${getCurrentWalletName() || "Not connected".yellow}`);
+    if (isAuth) {
       try {
-        // Generate signed authentication payload
-        const authData = await generateAuthPayload();
-        
-        console.log("\n✅ Successfully signed in to Tamashi Network!".green);
-        console.log("\n📋 Authentication Details:".cyan);
-        console.log(`   Message:   ${authData.message}`.grey);
-        console.log(`   Timestamp: ${authData.timestamp}`.grey);
-        console.log(`   Address:   ${authData.address.slice(0, 30)}...`.grey);
-        console.log(`   Signature: ${authData.signature.slice(0, 30)}...`.grey);
-        
-        console.log("\n📦 Auth Payload (JSON):".cyan);
-        console.log(`   ${authData.payload}`.dim);
-        
-        console.log("\n   ✓ Signature verified with viewing key".green.dim);
-        console.log("   ✓ Ready to authenticate with Tamashi services".green.dim);
-        
-      } catch (err) {
-        console.error("\n❌ Failed to sign:".red, (err as Error)?.message);
+        const balance = await tamashii.getBalance();
+        console.log(`   Balance:  ${balance.balance_bnb.toFixed(6)} BNB ($${balance.balance_usd.toFixed(2)})`.cyan);
+      } catch {
+        console.log(`   Balance:  Unable to fetch`.grey);
       }
-      
-      await confirmPromptCatchRetry("\nPress ENTER to continue...");
-      break;
     }
-    case "view-status": {
-      console.log("\n📊 Tamashi Network Status:".cyan);
-      console.log(`   Network:     ${"Connected".green}`);
-      console.log(`   Wallet:      ${getCurrentWalletName() || "Not connected".yellow}`);
-      console.log(`   Privacy:     ${"Enabled (Railgun)".green}`);
-      console.log(`   Broadcaster: ${isWakuConnected() ? "Available".green : "Disconnected".yellow}`);
-      
-      await confirmPromptCatchRetry("\nPress ENTER to continue...");
-      break;
+    if (activeGpu) {
+      console.log(`   GPU:      ${"Running".green} - ${activeGpu.hostname}`.cyan);
+    }
+
+    // Build menu choices based on state
+    const choices: any[] = [];
+
+    if (!isAuth) {
+      choices.push({ name: "sign-in", message: "Sign In with Wallet".green });
+    } else {
+      choices.push({ name: "view-balance", message: "View Balance".cyan });
+      if (!activeGpu) {
+        choices.push({ name: "launch-gpu", message: "Launch GPU (vLLM)".green });
+      } else {
+        choices.push({ name: "connect-gpu", message: `Connect to GPU (${activeGpu.hostname.slice(0, 20)}...)`.green });
+        choices.push({ name: "gpu-status", message: "GPU Status".cyan });
+      }
+      choices.push({ name: "sign-out", message: "Sign Out".yellow });
+    }
+    choices.push({ name: "deposit-info", message: "Deposit Info".grey });
+    choices.push({ name: "back", message: "Back to Main Menu".grey });
+
+    const signInPrompt = new Select({
+      header: " ",
+      message: "Tamashi Options",
+      choices,
+    });
+
+    const selection = await signInPrompt.run().catch(confirmPromptCatch);
+
+    if (!selection || selection === "back") {
+      return;
+    }
+
+    switch (selection) {
+      case "sign-in": {
+        const railgunAddress = getCurrentRailgunAddress();
+        if (!railgunAddress) {
+          console.log("\n❌ No wallet found. Please create a wallet first.".red);
+          await confirmPromptCatchRetry("Press ENTER to continue...");
+          break;
+        }
+
+        console.log("\n🔐 Signing with your wallet...".yellow);
+
+        try {
+          const authData = await generateAuthPayload();
+          console.log("   Authenticating with Tamashi backend...".grey);
+
+          await tamashii.authenticate(
+            authData.message,
+            authData.signature,
+            authData.address
+          );
+
+          console.log("\n✅ Successfully signed in to Tamashi Network!".green);
+          const balance = await tamashii.getBalance();
+          console.log(`   Balance: ${balance.balance_bnb.toFixed(6)} BNB ($${balance.balance_usd.toFixed(2)})`.cyan);
+
+        } catch (err) {
+          console.error("\n❌ Failed to sign in:".red, (err as Error)?.message);
+        }
+
+        await confirmPromptCatchRetry("\nPress ENTER to continue...");
+        break;
+      }
+
+      case "view-balance": {
+        try {
+          const balance = await tamashii.getBalance();
+          console.log("\n💰 Tamashi Balance:".cyan);
+          console.log(`   Deposits: ${balance.deposits_bnb.toFixed(6)} BNB`.white);
+          console.log(`   Spent:    ${balance.spent_bnb.toFixed(6)} BNB`.white);
+          console.log(`   Balance:  ${balance.balance_bnb.toFixed(6)} BNB ($${balance.balance_usd.toFixed(2)})`.green);
+        } catch (err) {
+          console.error("\n❌ Failed to fetch balance:".red, (err as Error)?.message);
+        }
+        await confirmPromptCatchRetry("\nPress ENTER to continue...");
+        break;
+      }
+
+      case "launch-gpu": {
+        console.log("\n🚀 Launching GPU Instance...".yellow);
+        console.log("   Model: NousResearch/Hermes-3-Llama-3.2-3B".grey);
+        console.log("   GPU:   L4".grey);
+        console.log("   Time:  10 minutes".grey);
+
+        try {
+          const result = await tamashii.launchVllm({
+            model: "NousResearch/Hermes-3-Llama-3.2-3B",
+            gpuType: "l4",
+            duration: 600,
+          });
+
+          console.log("\n✅ GPU Job Launched!".green);
+          console.log(`   Job ID:  ${result.jobId}`.grey);
+          console.log(`   C3 Job:  ${result.c3JobId}`.grey);
+          console.log(`   Cost:    ${result.costBnb.toFixed(6)} BNB ($${result.costUsd.toFixed(2)})`.cyan);
+          console.log(`   API Key: ${result.apiKey}`.yellow);
+
+          console.log("\n⏳ Waiting for GPU to start (this may take 1-2 minutes)...".yellow);
+          console.log("   The hostname will be displayed once ready.".grey);
+          console.log("   You can also check the C3 dashboard for status.".grey);
+
+          // Store partial session - hostname will be added when user connects
+          tamashii.setActiveSession({
+            jobId: result.jobId,
+            c3JobId: result.c3JobId,
+            hostname: "", // Will be set when connecting
+            apiKey: result.apiKey,
+            model: "hermes3:3b",
+          });
+
+        } catch (err) {
+          console.error("\n❌ Failed to launch GPU:".red, (err as Error)?.message);
+        }
+
+        await confirmPromptCatchRetry("\nPress ENTER to continue...");
+        break;
+      }
+
+      case "connect-gpu": {
+        if (!activeGpu) {
+          console.log("\n❌ No active GPU session.".red);
+          await confirmPromptCatchRetry("Press ENTER to continue...");
+          break;
+        }
+
+        // If hostname not set, prompt for it
+        if (!activeGpu.hostname) {
+          console.log("\n🔗 Enter the GPU hostname (from C3 dashboard):".yellow);
+          const { Input } = require("enquirer");
+          const hostnamePrompt = new Input({
+            message: "Hostname:",
+            initial: "xxx-gpu.compute3.ai",
+          });
+          const hostname = await hostnamePrompt.run().catch(() => null);
+          if (hostname) {
+            activeGpu.hostname = hostname;
+            tamashii.setActiveSession(activeGpu);
+          } else {
+            break;
+          }
+        }
+
+        console.log(`\n🔗 Connecting to ${activeGpu.hostname}...`.yellow);
+
+        // Check if vLLM is ready
+        const isReady = await tamashii.checkVllmHealth(activeGpu.hostname, activeGpu.apiKey);
+        if (!isReady) {
+          console.log("   ❌ vLLM not ready yet. Please wait and try again.".red);
+          await confirmPromptCatchRetry("Press ENTER to continue...");
+          break;
+        }
+
+        console.log("   ✅ vLLM is ready!".green);
+        console.log(`\n   Endpoint: https://${activeGpu.hostname}/v1/chat/completions`.cyan);
+        console.log(`   API Key:  ${activeGpu.apiKey}`.yellow);
+        console.log(`   Model:    ${activeGpu.model}`.grey);
+
+        await confirmPromptCatchRetry("\nPress ENTER to continue...");
+        break;
+      }
+
+      case "gpu-status": {
+        if (!activeGpu) {
+          console.log("\n❌ No active GPU session.".red);
+        } else {
+          console.log("\n🖥️  GPU Session:".cyan);
+          console.log(`   Job ID:   ${activeGpu.jobId}`.grey);
+          console.log(`   C3 Job:   ${activeGpu.c3JobId}`.grey);
+          console.log(`   Hostname: ${activeGpu.hostname || "Not set".yellow}`.white);
+          console.log(`   API Key:  ${activeGpu.apiKey}`.yellow);
+          console.log(`   Model:    ${activeGpu.model}`.grey);
+
+          if (activeGpu.hostname) {
+            const isReady = await tamashii.checkVllmHealth(activeGpu.hostname, activeGpu.apiKey);
+            console.log(`   Status:   ${isReady ? "Ready".green : "Not Ready".yellow}`);
+          }
+        }
+        await confirmPromptCatchRetry("\nPress ENTER to continue...");
+        break;
+      }
+
+      case "sign-out": {
+        tamashii.clearJwt();
+        tamashii.clearActiveSession();
+        console.log("\n✅ Signed out.".green);
+        await confirmPromptCatchRetry("Press ENTER to continue...");
+        break;
+      }
+
+      case "deposit-info": {
+        console.log("\n💳 Deposit Information:".cyan);
+        try {
+          const addr = await tamashii.getDepositAddress();
+          console.log("\n   Send BNB to this Railgun address to deposit:".white);
+          console.log(`   ${addr.railgunAddress}`.green);
+          console.log("\n   Or send to public EVM address:".white);
+          console.log(`   ${addr.evmAddress}`.yellow);
+        } catch (err) {
+          console.error("\n❌ Failed to fetch deposit address:".red, (err as Error)?.message);
+        }
+        await confirmPromptCatchRetry("\nPress ENTER to continue...");
+        break;
+      }
     }
   }
 };
