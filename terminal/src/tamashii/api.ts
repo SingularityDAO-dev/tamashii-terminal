@@ -175,3 +175,56 @@ export const getJob = async (jobId: string): Promise<Job> => {
   if (!currentJwt) throw new Error("Not authenticated");
   return apiRequest("GET", `/jobs/${jobId}`);
 };
+
+/**
+ * Get job logs
+ */
+export const getJobLogs = async (jobId: string): Promise<{ logs: string }> => {
+  if (!currentJwt) throw new Error("Not authenticated");
+  return apiRequest("GET", `/jobs/logs/${jobId}`);
+};
+
+/**
+ * Get job metrics
+ */
+export interface GpuMetric {
+  index: number;
+  name: string;
+  utilization: number;
+  memory_used: number;
+  memory_total: number;
+  temperature: number;
+  power_draw: number;
+}
+
+export interface SystemMetric {
+  cpu_percent: number;
+  memory_used: number;
+  memory_limit: number;
+}
+
+export interface JobMetrics {
+  gpus: GpuMetric[];
+  system: SystemMetric | null;
+}
+
+export const getJobMetrics = async (jobId: string): Promise<JobMetrics> => {
+  if (!currentJwt) throw new Error("Not authenticated");
+  return apiRequest("GET", `/jobs/metrics/${jobId}`);
+};
+
+/**
+ * Get running job with hostname
+ */
+export interface RunningJob {
+  id: string;
+  c3_job_id: string;
+  hostname: string;
+  gpu_type: string;
+  state: string;
+}
+
+export const getRunningJob = async (): Promise<{ job: RunningJob | null }> => {
+  if (!currentJwt) throw new Error("Not authenticated");
+  return apiRequest("GET", "/jobs/running");
+};

@@ -152,3 +152,113 @@ export const getVllmApiKey = (): string | null => {
   if (!activeSession) return null;
   return activeSession.apiKey;
 };
+
+/**
+ * Get GPU status (logs + metrics) for active session
+ */
+export const getGpuStatus = async (): Promise<{
+  logs: string | null;
+  metrics: api.JobMetrics | null;
+  error?: string;
+}> => {
+  if (!activeSession) {
+    return { logs: null, metrics: null, error: "No active GPU session" };
+  }
+
+  let logs: string | null = null;
+  let metrics: api.JobMetrics | null = null;
+  let error: string | undefined;
+
+  // Fetch logs (best effort)
+  try {
+    const logsResult = await api.getJobLogs(activeSession.jobId);
+    logs = logsResult.logs;
+  } catch (e) {
+    // Ignore - logs might not be available
+  }
+
+  // Fetch metrics (best effort)
+  try {
+    metrics = await api.getJobMetrics(activeSession.jobId);
+  } catch (e) {
+    // Ignore - metrics might not be available (job still starting)
+  }
+
+  return { logs, metrics, error };
+};
+
+/**
+ * Chat with vLLM instance
+ */
+export const chatWithVllm = async (
+  message: string,
+  onToken?: (token: string) => void
+): Promise<string> => {
+  if (!activeSession) {
+    throw new Error("No active GPU session");
+  }
+
+  const session = activeSession; // TypeScript narrowing
+  const https = require("https");
+
+  return new Promise((resolve, reject) => {
+    const requestBody = JSON.stringify({
+      model: session.model,
+      messages: [{ role: "user", content: message }],
+      stream: true,
+    });
+
+    const req = https.request(
+      {
+        hostname: session.hostname,
+        path: "/v1/chat/completions",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.apiKey}`,
+          "Content-Length": Buffer.byteLength(requestBody),
+        },
+      },
+      (res: any) => {
+        if (res.statusCode !== 200) {
+          let errorData = "";
+          res.on("data", (chunk: Buffer) => { errorData += chunk.toString(); });
+          res.on("end", () => reject(new Error(`API error ${res.statusCode}: ${errorData}`)));
+          return;
+        }
+
+        let fullResponse = "";
+        let buffer = "";
+
+        res.on("data", (chunk: Buffer) => {
+          buffer += chunk.toString();
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || "";
+
+          for (const line of lines) {
+            if (line.startsWith("data: ")) {
+              const data = line.slice(6);
+              if (data === "[DONE]") continue;
+              try {
+                const parsed = JSON.parse(data);
+                const content = parsed.choices?.[0]?.delta?.content;
+                if (content) {
+                  fullResponse += content;
+                  onToken?.(content);
+                }
+              } catch {
+                // Ignore parse errors
+              }
+            }
+          }
+        });
+
+        res.on("end", () => resolve(fullResponse));
+      }
+    );
+
+    req.on("error", reject);
+    req.write(requestBody);
+    req.end();
+  });
+};

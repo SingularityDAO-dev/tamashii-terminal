@@ -563,6 +563,67 @@ const runBroadcasterSettingsPrompt = async () => {
 };
 
 /**
+ * Run interactive chat with vLLM GPU instance
+ */
+const runGpuChat = async () => {
+  const activeGpu = tamashii.getActiveSession();
+  if (!activeGpu || !activeGpu.hostname) {
+    console.log("\n❌ No active GPU session with hostname.".red);
+    return;
+  }
+
+  console.log("\n" + "=".repeat(60).green);
+  console.log("🤖 GPU Chat".green.bold);
+  console.log("=".repeat(60).green);
+  console.log(`   Model: ${activeGpu.model}`.grey);
+  console.log(`   Host:  ${activeGpu.hostname}`.grey);
+  console.log("\nType 'exit' or 'quit' to return to menu.\n".dim);
+
+  const readline = require("readline");
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  const prompt = () => {
+    rl.question("you> ".cyan, async (input: string) => {
+      const message = input.trim();
+
+      if (!message) {
+        prompt();
+        return;
+      }
+
+      if (message.toLowerCase() === "exit" || message.toLowerCase() === "quit") {
+        rl.close();
+        return;
+      }
+
+      process.stdout.write("ai> ".green);
+
+      try {
+        await tamashii.chatWithVllm(message, (token) => {
+          process.stdout.write(token);
+        });
+        console.log("\n");
+      } catch (err) {
+        console.log(`\n❌ Error: ${(err as Error).message}`.red);
+      }
+
+      prompt();
+    });
+  };
+
+  return new Promise<void>((resolve) => {
+    rl.on("close", () => {
+      console.log("\nReturning to menu...".grey);
+      resolve();
+    });
+    prompt();
+  });
+};
+
+/**
  * Prompt for signing in to Tamashi Network
  */
 const runTamashiSignInPrompt = async () => {
@@ -574,7 +635,33 @@ const runTamashiSignInPrompt = async () => {
 
     // Show current status
     const isAuth = tamashii.isAuthenticated();
-    const activeGpu = tamashii.getActiveSession();
+    let activeGpu = tamashii.getActiveSession();
+
+    // If authenticated, check for running GPUs from backend
+    let runningJob: tamashii.RunningJob | null = null;
+    if (isAuth) {
+      try {
+        const result = await tamashii.getRunningJob();
+        runningJob = result.job;
+        if (runningJob && activeGpu) {
+          // Update session with hostname
+          activeGpu.hostname = runningJob.hostname;
+          tamashii.setActiveSession(activeGpu);
+        } else if (runningJob && !activeGpu) {
+          // We have a running job but no local session - create one (without API key)
+          tamashii.setActiveSession({
+            jobId: runningJob.id,
+            c3JobId: runningJob.c3_job_id,
+            hostname: runningJob.hostname,
+            apiKey: "",
+            model: "hermes3:3b",
+          });
+          activeGpu = tamashii.getActiveSession();
+        }
+      } catch {
+        // Ignore errors
+      }
+    }
 
     console.log("\n📊 Status:".white);
     console.log(`   Auth:     ${isAuth ? "Signed In".green : "Not signed in".yellow}`);
@@ -587,8 +674,11 @@ const runTamashiSignInPrompt = async () => {
         console.log(`   Balance:  Unable to fetch`.grey);
       }
     }
-    if (activeGpu) {
-      console.log(`   GPU:      ${"Running".green} - ${activeGpu.hostname}`.cyan);
+    if (runningJob) {
+      console.log(`   GPU:      ${"Running".green} - ${runningJob.hostname}`.cyan);
+    } else if (activeGpu) {
+      const statusStr = activeGpu.hostname ? "Running".green : "Starting".yellow;
+      console.log(`   GPU:      ${statusStr} - ${activeGpu.c3JobId.slice(0, 8)}...`.cyan);
     }
 
     // Build menu choices based on state
@@ -598,11 +688,10 @@ const runTamashiSignInPrompt = async () => {
       choices.push({ name: "sign-in", message: "Sign In with Wallet".green });
     } else {
       choices.push({ name: "view-balance", message: "View Balance".cyan });
-      if (!activeGpu) {
-        choices.push({ name: "launch-gpu", message: "Launch GPU (vLLM)".green });
-      } else {
-        choices.push({ name: "connect-gpu", message: `Connect to GPU (${activeGpu.hostname.slice(0, 20)}...)`.green });
-        choices.push({ name: "gpu-status", message: "GPU Status".cyan });
+      choices.push({ name: "launch-gpu", message: "Launch GPU (vLLM)".green });
+      if (runningJob || activeGpu) {
+        choices.push({ name: "gpu-status", message: "GPU Status (logs/metrics)".cyan });
+        choices.push({ name: "connect-gpu", message: "Connect to GPU (chat)".green });
       }
       choices.push({ name: "sign-out", message: "Sign Out".yellow });
     }
@@ -646,6 +735,21 @@ const runTamashiSignInPrompt = async () => {
           const balance = await tamashii.getBalance();
           console.log(`   Balance: ${balance.balance_bnb.toFixed(6)} BNB ($${balance.balance_usd.toFixed(2)})`.cyan);
 
+          // Check for running GPUs
+          console.log("\n🔍 Checking for running GPUs...".grey);
+          try {
+            const { job: runningJob } = await tamashii.getRunningJob();
+            if (runningJob) {
+              console.log(`   ✅ Found running GPU: ${runningJob.hostname}`.green);
+              console.log(`   GPU: ${runningJob.gpu_type} | State: ${runningJob.state}`.grey);
+              console.log("   Use 'Connect to GPU' to start chatting.".cyan);
+            } else {
+              console.log("   No running GPUs found.".grey);
+            }
+          } catch {
+            // Ignore errors checking for GPUs
+          }
+
         } catch (err) {
           console.error("\n❌ Failed to sign in:".red, (err as Error)?.message);
         }
@@ -687,9 +791,9 @@ const runTamashiSignInPrompt = async () => {
           console.log(`   Cost:    ${result.costBnb.toFixed(6)} BNB ($${result.costUsd.toFixed(2)})`.cyan);
           console.log(`   API Key: ${result.apiKey}`.yellow);
 
-          console.log("\n⏳ Waiting for GPU to start (this may take 1-2 minutes)...".yellow);
-          console.log("   The hostname will be displayed once ready.".grey);
-          console.log("   You can also check the C3 dashboard for status.".grey);
+          console.log("\n⏳ GPU is starting (1-2 minutes)...".yellow);
+          console.log("   Use 'GPU Status' to check progress.".grey);
+          console.log("   Use 'Connect to GPU' once ready.".grey);
 
           // Store partial session - hostname will be added when user connects
           tamashii.setActiveSession({
@@ -708,66 +812,139 @@ const runTamashiSignInPrompt = async () => {
         break;
       }
 
-      case "connect-gpu": {
-        if (!activeGpu) {
-          console.log("\n❌ No active GPU session.".red);
-          await confirmPromptCatchRetry("Press ENTER to continue...");
-          break;
-        }
+      case "gpu-status": {
+        console.log("\n🖥️  GPU Status".cyan.bold);
+        console.log("=".repeat(50).cyan);
 
-        // If hostname not set, prompt for it
-        if (!activeGpu.hostname) {
-          console.log("\n🔗 Enter the GPU hostname (from C3 dashboard):".yellow);
-          const { Input } = require("enquirer");
-          const hostnamePrompt = new Input({
-            message: "Hostname:",
-            initial: "xxx-gpu.compute3.ai",
-          });
-          const hostname = await hostnamePrompt.run().catch(() => null);
-          if (hostname) {
-            activeGpu.hostname = hostname;
-            tamashii.setActiveSession(activeGpu);
+        // Check for running job from C3
+        console.log("   Checking for running GPU...".grey);
+        try {
+          const { job: runningJob } = await tamashii.getRunningJob();
+
+          if (runningJob) {
+            // Update active session with hostname
+            if (activeGpu) {
+              activeGpu.hostname = runningJob.hostname;
+              tamashii.setActiveSession(activeGpu);
+            } else {
+              // Create session from running job
+              tamashii.setActiveSession({
+                jobId: runningJob.id,
+                c3JobId: runningJob.c3_job_id,
+                hostname: runningJob.hostname,
+                apiKey: "", // Unknown - user will need to provide
+                model: "hermes3:3b",
+              });
+            }
+
+            console.log(`\n   ✅ Found running GPU!`.green);
+            console.log(`   Job ID:   ${runningJob.id}`.grey);
+            console.log(`   C3 Job:   ${runningJob.c3_job_id}`.grey);
+            console.log(`   Hostname: ${runningJob.hostname}`.white);
+            console.log(`   GPU:      ${runningJob.gpu_type}`.grey);
+            console.log(`   State:    ${runningJob.state}`.green);
+
+            if (activeGpu?.apiKey) {
+              console.log(`   API Key:  ${activeGpu.apiKey}`.yellow);
+
+              // Check vLLM health
+              const isReady = await tamashii.checkVllmHealth(runningJob.hostname, activeGpu.apiKey);
+              console.log(`   vLLM:     ${isReady ? "Ready ✓".green : "Starting...".yellow}`);
+
+              if (isReady) {
+                console.log("\n   💬 GPU is ready! Select 'Connect to GPU' to start chatting.".green);
+              }
+            }
+
+            // Fetch metrics
+            const status = await tamashii.getGpuStatus();
+            if (status.metrics && status.metrics.gpus.length > 0) {
+              console.log("\n🎮 GPU Metrics:".green);
+              for (const gpu of status.metrics.gpus) {
+                console.log(`   ${gpu.name}`.white);
+                console.log(`   ├─ Utilization: ${gpu.utilization}%`.grey);
+                console.log(`   ├─ Memory:      ${gpu.memory_used}MB / ${gpu.memory_total}MB`.grey);
+                console.log(`   ├─ Temperature: ${gpu.temperature}°C`.grey);
+                console.log(`   └─ Power:       ${gpu.power_draw}W`.grey);
+              }
+            }
           } else {
-            break;
+            console.log("\n   No running GPU found.".yellow);
+            if (activeGpu) {
+              console.log(`   Last job: ${activeGpu.c3JobId} (may still be starting)`.grey);
+            }
           }
+        } catch (err) {
+          console.log(`\n   ❌ Error checking GPU: ${(err as Error).message}`.red);
         }
-
-        console.log(`\n🔗 Connecting to ${activeGpu.hostname}...`.yellow);
-
-        // Check if vLLM is ready
-        const isReady = await tamashii.checkVllmHealth(activeGpu.hostname, activeGpu.apiKey);
-        if (!isReady) {
-          console.log("   ❌ vLLM not ready yet. Please wait and try again.".red);
-          await confirmPromptCatchRetry("Press ENTER to continue...");
-          break;
-        }
-
-        console.log("   ✅ vLLM is ready!".green);
-        console.log(`\n   Endpoint: https://${activeGpu.hostname}/v1/chat/completions`.cyan);
-        console.log(`   API Key:  ${activeGpu.apiKey}`.yellow);
-        console.log(`   Model:    ${activeGpu.model}`.grey);
 
         await confirmPromptCatchRetry("\nPress ENTER to continue...");
         break;
       }
 
-      case "gpu-status": {
-        if (!activeGpu) {
-          console.log("\n❌ No active GPU session.".red);
-        } else {
-          console.log("\n🖥️  GPU Session:".cyan);
-          console.log(`   Job ID:   ${activeGpu.jobId}`.grey);
-          console.log(`   C3 Job:   ${activeGpu.c3JobId}`.grey);
-          console.log(`   Hostname: ${activeGpu.hostname || "Not set".yellow}`.white);
-          console.log(`   API Key:  ${activeGpu.apiKey}`.yellow);
-          console.log(`   Model:    ${activeGpu.model}`.grey);
+      case "connect-gpu": {
+        // Try to get running job if no active session or no hostname
+        if (!activeGpu || !activeGpu.hostname) {
+          console.log("\n🔍 Looking for running GPU...".yellow);
+          try {
+            const { job: runningJob } = await tamashii.getRunningJob();
+            if (runningJob) {
+              if (activeGpu) {
+                activeGpu.hostname = runningJob.hostname;
+                tamashii.setActiveSession(activeGpu);
+              } else {
+                // Need API key - prompt for it
+                console.log(`   Found: ${runningJob.hostname}`.green);
+                console.log("\n   Enter the API key for this instance:".yellow);
+                const apiKeyPrompt = new Input({
+                  message: "API Key:",
+                  initial: "tamashii_instance_",
+                });
+                const apiKey = await apiKeyPrompt.run().catch(() => null);
+                if (!apiKey) break;
 
-          if (activeGpu.hostname) {
-            const isReady = await tamashii.checkVllmHealth(activeGpu.hostname, activeGpu.apiKey);
-            console.log(`   Status:   ${isReady ? "Ready".green : "Not Ready".yellow}`);
+                tamashii.setActiveSession({
+                  jobId: runningJob.id,
+                  c3JobId: runningJob.c3_job_id,
+                  hostname: runningJob.hostname,
+                  apiKey,
+                  model: "hermes3:3b",
+                });
+              }
+            } else {
+              console.log("   ❌ No running GPU found.".red);
+              await confirmPromptCatchRetry("Press ENTER to continue...");
+              break;
+            }
+          } catch (err) {
+            console.log(`   ❌ Error: ${(err as Error).message}`.red);
+            await confirmPromptCatchRetry("Press ENTER to continue...");
+            break;
           }
         }
-        await confirmPromptCatchRetry("\nPress ENTER to continue...");
+
+        // Refresh activeGpu reference
+        const session = tamashii.getActiveSession();
+        if (!session || !session.hostname) {
+          console.log("\n❌ No GPU session with hostname.".red);
+          await confirmPromptCatchRetry("Press ENTER to continue...");
+          break;
+        }
+
+        console.log(`\n🔗 Connecting to ${session.hostname}...`.yellow);
+
+        // Check if vLLM is ready
+        const isReady = await tamashii.checkVllmHealth(session.hostname, session.apiKey);
+        if (!isReady) {
+          console.log("   ❌ vLLM not ready yet. Check 'GPU Status' for progress.".red);
+          await confirmPromptCatchRetry("Press ENTER to continue...");
+          break;
+        }
+
+        console.log("   ✅ vLLM is ready!".green);
+
+        // Launch interactive chat
+        await runGpuChat();
         break;
       }
 

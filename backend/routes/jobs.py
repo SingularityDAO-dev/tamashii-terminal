@@ -36,15 +36,16 @@ async def create_job(req: JobCreate, address: str = Depends(require_auth), db: S
     # Calculate cost
     cost = await calc_cost(req.gpu_type, req.duration_seconds)
 
-    # Check balance (only count billed jobs)
-    txs = await railgun.get_transactions(address)
-    deposits_wei = sum(int(r["amount"]) for tx in txs for r in tx.get("received", []))
-    deposits_bnb = deposits_wei / 1e18
-    spent_bnb = db.query(func.coalesce(func.sum(Job.cost_bnb), 0)).filter(Job.user_address == address, Job.billed == True).scalar()
-    balance_bnb = deposits_bnb - float(spent_bnb)
+    # Check balance only if billing is enabled
+    if BILLING_ENABLED:
+        txs = await railgun.get_transactions(address)
+        deposits_wei = sum(int(r["amount"]) for tx in txs for r in tx.get("received", []))
+        deposits_bnb = deposits_wei / 1e18
+        spent_bnb = db.query(func.coalesce(func.sum(Job.cost_bnb), 0)).filter(Job.user_address == address, Job.billed == True).scalar()
+        balance_bnb = deposits_bnb - float(spent_bnb)
 
-    if balance_bnb < cost["cost_bnb"]:
-        raise HTTPException(status_code=402, detail=f"Insufficient balance: {balance_bnb:.6f} BNB < {cost['cost_bnb']:.6f} BNB")
+        if balance_bnb < cost["cost_bnb"]:
+            raise HTTPException(status_code=402, detail=f"Insufficient balance: {balance_bnb:.6f} BNB < {cost['cost_bnb']:.6f} BNB")
 
     # Launch C3 job
     c3 = C3(api_key=get_c3_api_key())
@@ -102,14 +103,34 @@ async def list_jobs(address: str = Depends(require_auth), db: Session = Depends(
     return [{"id": j.id, "c3_job_id": j.c3_job_id, "gpu_type": j.gpu_type, "cost_bnb": j.cost_bnb, "created_at": j.created_at} for j in jobs]
 
 
-@router.get("/{job_id}")
-async def get_job(job_id: str, address: str = Depends(require_auth), db: Session = Depends(get_db)):
-    """Get job details"""
-    job = db.query(Job).filter(Job.id == job_id, Job.user_address == address).first()
-    if not job:
-        raise HTTPException(status_code=404, detail="Job not found")
-    return {"id": job.id, "c3_job_id": job.c3_job_id, "gpu_type": job.gpu_type, "image": job.image,
-            "duration_seconds": job.duration_seconds, "cost_usd": job.cost_usd, "cost_bnb": job.cost_bnb, "created_at": job.created_at}
+@router.get("/running")
+async def get_running_job(address: str = Depends(require_auth), db: Session = Depends(get_db)):
+    """Get the first running job for this user with hostname from C3"""
+    # Get user's recent jobs
+    jobs = db.query(Job).filter(Job.user_address == address).order_by(Job.created_at.desc()).limit(10).all()
+    if not jobs:
+        return {"job": None}
+
+    c3 = C3(api_key=get_c3_api_key())
+
+    # Check each job's status on C3
+    for job in jobs:
+        try:
+            c3_job = c3.jobs.get(job.c3_job_id)
+            if c3_job.state == "running" and c3_job.hostname:
+                return {
+                    "job": {
+                        "id": job.id,
+                        "c3_job_id": job.c3_job_id,
+                        "hostname": c3_job.hostname,
+                        "gpu_type": job.gpu_type,
+                        "state": c3_job.state,
+                    }
+                }
+        except Exception:
+            continue
+
+    return {"job": None}
 
 
 @router.get("/logs/{job_id}")
@@ -125,6 +146,16 @@ async def get_job_logs(job_id: str, address: str = Depends(require_auth), db: Se
         return {"logs": logs}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get logs: {e}")
+
+
+@router.get("/{job_id}")
+async def get_job(job_id: str, address: str = Depends(require_auth), db: Session = Depends(get_db)):
+    """Get job details"""
+    job = db.query(Job).filter(Job.id == job_id, Job.user_address == address).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return {"id": job.id, "c3_job_id": job.c3_job_id, "gpu_type": job.gpu_type, "image": job.image,
+            "duration_seconds": job.duration_seconds, "cost_usd": job.cost_usd, "cost_bnb": job.cost_bnb, "created_at": job.created_at}
 
 
 @router.get("/metrics/{job_id}")
