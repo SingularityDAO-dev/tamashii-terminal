@@ -8,7 +8,7 @@
    ╚═╝   ╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝
 ```
 
-<video src="docs/tamashi-terminal.mp4" controls width="100%"></video>
+https://github.com/SingularityDAO-dev/tamashii-terminal/raw/refs/heads/main/docs/tamashi-terminal.mp4
 
 ## privacy LLM
 
