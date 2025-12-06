@@ -11,13 +11,14 @@
 
 # Tamashii Terminal
 
-A privacy-enhanced command-line EVM wallet with integrated **Codex LLM** support. Built on **Railgun** for zero-knowledge private transactions on **BNB Chain** (default). Features private token transfers, swaps, and AI-powered assistance through open source LLM models (Llama, Mistral, Qwen, and more). **Railgun is used to pay for GPU resources** required for LLM inference and cryptographic operations.
+A privacy-enhanced command-line EVM wallet with integrated **Codex LLM** support and **GPU billing backend**. Built on **Railgun** for zero-knowledge private transactions on **BNB Chain** (default). Features private token transfers, swaps, AI-powered assistance through open source LLM models (Llama, Mistral, Qwen, and more), and a backend service that tracks GPU resource usage with private Railgun payments.
 
 ## 🌟 Features
 
 - **Privacy-Enhanced Wallet**: EVM wallet with Railgun zero-knowledge privacy on BNB Chain (default)
 - **Private Transactions**: Shield/unshield, transfer, and swap tokens with complete privacy using zk-SNARKs
 - **Codex LLM Integration**: AI-powered assistance with open source models (Llama, Mistral, Qwen, etc.)
+- **GPU Billing Backend**: FastAPI service tracks GPU job costs and balances via Railgun transactions
 - **Railgun GPU Payments**: Pay for GPU resources (LLM inference, zk-SNARK generation) via private Railgun transactions
 - **TEE GPU Encryption**: Trusted Execution Environment encryption for secure GPU-accelerated operations
 - **Token Swaps**: Private and public swaps via 0x protocol
@@ -27,17 +28,19 @@ A privacy-enhanced command-line EVM wallet with integrated **Codex LLM** support
 
 ### Prerequisites
 
-- **Node.js** >= 20
+- **Node.js** >= 20 (for terminal)
+- **Python 3.10+** (for backend)
 - Terminal/Command line access
-- BNB Chain wallet  for transactions
-- BNB  tokens for gas fees
+- BNB Chain wallet for transactions
+- BNB tokens for gas fees
 
 ### Quick Start
 
+**Terminal Wallet:**
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/tamashii-terminal.git
-cd tamashii-terminal
+cd tamashii-terminal/terminal
 
 # Install dependencies
 npm install --legacy-peer-deps
@@ -51,21 +54,58 @@ npm start
 ./bin/tamashii
 ```
 
+**Backend Service (GPU Billing):**
+```bash
+cd backend
+
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Set environment variables (see backend/.env.example)
+# Run the FastAPI service
+uvicorn main:app --reload
+```
+
+**Project Structure:**
+- `terminal/` - CLI wallet application
+- `backend/` - FastAPI GPU billing service
+- `llm-debug/` - LLM request/response logging proxy
+- `railgun/` - Railgun integration components
+
 ## 📖 Usage
+
+### Terminal Wallet
 
 Tamashii Terminal runs as an interactive CLI wallet with a menu-driven interface.
 
 **Key Operations:**
 - Create/load Railgun wallets, shield/unshield tokens, private transfers/swaps
 - Launch Codex for AI assistance (GPU resources paid via Railgun)
+- Pay for GPU resources using private Railgun transactions
 - Manage networks, RPC providers, and view balances
 - Execute private transactions with zero-knowledge privacy
 
 **Workflow:**
-1. Start: `npm start` or `./bin/tamashii`
+1. Start: `cd terminal && npm start` or `./bin/tamashii`
 2. Create/load wallet and select network (BNB Chain default)
 3. Shield tokens to private Railgun address
-4. Make private transactions or launch Codex for AI assistance
+4. Use "Pay EASE" or private transfer to pay for GPU resources
+5. Make private transactions or launch Codex for AI assistance
+
+### Backend Service
+
+The backend service provides GPU job management and billing:
+
+**API Endpoints:**
+- `POST /jobs` - Launch GPU jobs (deducts from Railgun balance)
+- `GET /balance` - Check balance (deposits - spent)
+- `GET /jobs` - List user's GPU jobs
+
+**How it works:**
+1. Users deposit BNB via private Railgun transactions to the service address
+2. Backend tracks deposits by scanning Railgun transactions
+3. When launching GPU jobs, cost is calculated and deducted from balance
+4. Balance = Total deposits - Total spent on billed jobs
 
 ## 🔒 Privacy Features
 
@@ -133,13 +173,26 @@ export OPENAI_BASE_URL="https://api.together.xyz/v1"  # Optional
 
 ## 📝 Examples
 
+**Terminal Wallet:**
 ```bash
-# Start wallet
-$ npm start
+cd terminal
+npm start
 
-# Typical workflow:
-# 1. Create/load wallet → 2. Shield tokens → 3. Make private transactions
-# 4. Launch Codex (GPU resources paid via Railgun)
+# Menu options:
+# - Create Wallet
+# - Shield [BNB]
+# - Private Transfer [0zk → 0zk]
+# - Pay EASE (for GPU resources)
+# - Launch Codex
+```
+
+**Backend API:**
+```bash
+cd backend
+uvicorn main:app --reload
+
+# API available at http://localhost:8000
+# Docs at http://localhost:8000/docs
 ```
 
 ## 🤝 Contributing
@@ -172,10 +225,15 @@ npm run lint
 
 ### Scripts
 
+**Terminal:**
 - `npm start` - Run the built application
 - `npm run build` - Build TypeScript to JavaScript
 - `npm run lint` - Run ESLint
 - `npm run installdeps` - Install dependencies with legacy peer deps
+
+**Backend:**
+- `uvicorn main:app --reload` - Run FastAPI development server
+- `alembic upgrade head` - Run database migrations
 
 ## ⚠️ Disclaimer
 
