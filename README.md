@@ -247,6 +247,8 @@ This tool is designed for privacy-conscious users. While it implements strong pr
 
 ## 🔗 Links
 
+- [API Documentation](https://tamashii.compute3.ai/api/docs) - Interactive API documentation
+- [OpenAPI Specification](https://tamashii.compute3.ai/api/openapi.json) - OpenAPI JSON schema
 - [Documentation](https://github.com/yourusername/tamashii-terminal/wiki)
 - [Issue Tracker](https://github.com/yourusername/tamashii-terminal/issues)
 - [Privacy Policy](https://github.com/yourusername/tamashii-terminal/blob/main/PRIVACY.md)
