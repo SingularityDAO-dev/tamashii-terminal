@@ -8,6 +8,8 @@
    ╚═╝   ╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝
 ```
 
+<video src="docs/tamashi-terminal.mp4" controls width="100%"></video>
+
 ## privacy LLM
 
 # Tamashii Terminal
